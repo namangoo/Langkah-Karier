@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asesmen Karir RIASEC (v3 - Fix Skor Seri)</title>
+    
+    <style>
+        /* (CSS tidak berubah) */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f4f7f6; color: #333; margin: 0; padding: 20px; }
+        #quiz-container { max-width: 700px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); padding: 30px; }
+        h1, h2, h3 { color: #1a535c; text-align: center; }
+        .question { margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
+        .question p { font-size: 1.1em; font-weight: 600; margin-bottom: 15px; }
+        .options { display: flex; flex-direction: column; gap: 10px; }
+        .basic-input { display: block; width: 95%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; font-size: 1em; }
+        .option { padding: 10px 15px; border-radius: 5px; cursor: pointer; transition: background-color 0.2s; border: 1px solid #ccc; text-align: left; }
+        .option:hover { background-color: #f0f0f0; }
+        .option input[type="radio"] { margin-right: 8px; }
+        .submit-btn { display: block; width: 100%; padding: 15px; background-color: #1a535c; color: white; border: none; border-radius: 5px; font-size: 1.2em; font-weight: bold; cursor: pointer; transition: background-color 0.2s; margin-top: 20px; }
+        .submit-btn:hover { background-color: #4ecdc4; }
+        .submit-btn:disabled { background-color: #999; cursor: not-allowed; }
+        .result-box { margin-top: 30px; background-color: #e6fffa; border: 1px solid #4ecdc4; padding: 20px; border-radius: 8px; }
+        #riasec-result-container { text-align: center; }
+        .dynamic-question-wrapper { margin-top: 20px; padding-left: 20px; border-left: 3px solid #eee; }
+        #riasec-form, #school-form, #riasec-result-container, #school-result-container { display: none; }
+    </style>
+</head>
+<body>
+
+    <div id="quiz-container">
+        
+        <form id="user-form">
+            <h1>Selamat Datang!</h1>
+            <p style="text-align: center;">Silakan isi nama dan kelas Anda untuk memulai asesmen.</p>
+            <div class="question">
+                <p>Nama Lengkap</p>
+                <input type="text" id="user-name" class="basic-input" placeholder="Masukkan nama Anda..." required>
+            </div>
+            <div class="question">
+                <p>Kelas</p>
+                <input type="text" id="user-class" class="basic-input" placeholder="Contoh: 9A" required>
+            </div>
+            <button type="submit" class="submit-btn" id="start-btn">Mulai Asesmen</button>
+        </form>
+
+        <form id="riasec-form">
+            <h1>Tahap 1: Asesmen Minat Karir</h1>
+            <p style="text-align: center;">Jawab "Iya" atau "Tidak" untuk setiap pernyataan di bawah ini.</p>
+            <div id="questions-wrapper-riasec"></div>
+            <button type="submit" class="submit-btn" id="submit-riasec">Selesai Tahap 1: Lihat Tipe Minat Saya</button>
+        </form>
+
+        <div id="riasec-result-container" class="result-box">
+            <h2>Tipe Minat Terkuat Anda:</h2>
+            <h3 id="riasec-title"></h3>
+            <div id="riasec-description" style="text-align: left;"></div>
+            <hr>
+            <p><strong>Rincian Skor Anda:</strong></p>
+            <p id="riasec-scores"></p>
+        </div>
+
+        <form id="school-form">
+            <h2 style="margin-top: 40px;">Tahap 2: Rekomendasi Sekolah</h2>
+            <div class="question">
+                <p>31. Kamu lebih suka jenis pembelajaran seperti apa?</p>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q31" value="smk" required> Lebih banyak praktik langsung</label>
+                    <label class="option"><input type="radio" name="q31" value="teori" required> Lebih banyak teori dan analisis</label>
+                    <label class="option"><input type="radio" name="q31" value="ma" required> Teori + praktik + pendalaman agama</label>
+                </div>
+            </div>
+            <div id="q32-wrapper" class="dynamic-question-wrapper" style="display: none;">
+                <div class="question">
+                    <p>32. Setelah lulus sekolah nanti, kamu ingin...</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q32" value="smk"> Cepat bekerja dan punya skill</label>
+                        <label class="option"><input type="radio" name="q32" value="kuliah"> Kuliah di universitas</label>
+                        <label class="option"><input type="radio" name="q32" value="ma"> Mendalami ilmu agama lebih dalam</label>
+                    </div>
+                </div>
+            </div>
+            <div id="q33-wrapper" class="dynamic-question-wrapper" style="display: none;">
+                <div class="question">
+                    <p>33. Lingkungan belajar seperti apa yang kamu inginkan?</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q33" value="sma"> Lingkungan akademik umum (IPA/IPS/Bahasa)</label>
+                        <label class="option"><input type="radio" name="q33" value="ma"> Lingkungan religius dan Islami</label>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="submit-btn" id="submit-school">Simpan & Lihat Rekomendasi Akhir</button>
+        </form>
+
+        <div id="school-result-container" class="result-box">
+            <h2>Hasil Akhir Rekomendasi Sekolah:</h2>
+            <h3 id="school-title"></h3>
+            <p id="school-description"></p>
+            <p id="save-status" style="font-weight: bold; text-align: center;"></p>
+        </div>
+    </div>
+
+    <script>
+        
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // !!! TEMPELKAN URL WEB APP ANDA DARI GOOGLE APPS SCRIPT DI SINI !!!
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        const appsScriptURL = "https://script.google.com/macros/s/AKfycbzF6oP9qdUhUhdBCno7ETQGuj2Ftycf4EGvRRtddnPltWbiFh4oQ02tSZLAtHDlURycdg/exec";
+        
+        // --- VARIABEL GLOBAL UNTUK MENYIMPAN HASIL ---
+        let finalRIASECScores = {};
+        let finalRIASECType = ""; // Sekarang bisa berisi "R, A"
+        let finalSchoolResult = "";
+        let userData = {
+            nama: "",
+            kelas: ""
+        };
+
+        // --- 1. DAFTAR PERTANYAAN TAHAP 1 (RIASEC) ---
+        const questionsRIASEC = [
+            { question: "Apakah kamu suka memperbaiki barang-barang yang rusak (sepeda, alat listrik, mainan)?", name: "q1", type: "R" },
+            { question: "Apakah kamu lebih suka kegiatan praktik dibanding teori di kelas?", name: "q2", type: "R" },
+            { question: "Apakah kamu senang menggunakan alat kerja seperti obeng, tang, atau peralatan bengkel?", name: "q3", type: "R" },
+            { question: "Apakah kamu tertarik mempelajari cara kerja mesin atau elektronik?", name: "q4", type: "R" },
+            { question: "Apakah kamu merasa nyaman bekerja di luar ruangan atau bergerak aktif?", name: "q5", type: "R" },
+            { question: "Apakah kamu suka memecahkan soal yang sulit atau teka-teki logika?", name: "q6", type: "I" },
+            { question: "Apakah kamu sering penasaran terhadap sesuatu dan mencari tahu alasannya?", name: "q7", type: "I" },
+            { question: "Apakah kamu menikmati percobaan sains atau penelitian kecil?", name: "q8", type: "I" },
+            { question: "Apakah kamu lebih suka belajar hal yang menantang pikiran?", name: "q9", type: "I" },
+            { question: "Apakah kamu sering membaca atau menonton hal yang membuat kamu ingin menyelidikinya lebih jauh?", name: "q10", type: "I" },
+            { question: "Apakah kamu suka menggambar, mendesain, atau membuat karya seni?", name: "q11", type: "A" },
+            { question: "Apakah kamu senang mengekspresikan diri melalui musik, tulisan, atau seni?", name: "q12", type: "A" },
+            { question: "Apakah kamu lebih nyaman bekerja tanpa aturan yang kaku?", name: "q13", type: "A" },
+            { question: "Apakah kamu suka membuat sesuatu yang unik atau berbeda?", name: "q14", type: "A" },
+            { question: "Apakah kamu tertarik pada dunia kreatif seperti film, musik, animasi, atau desain?", name: "q15", type: "A" },
+            { question: "Apakah kamu suka membantu teman yang kesulitan memahami pelajaran?", name: "q16", type: "S" },
+            { question: "Apakah kamu lebih menikmati kerja kelompok dibanding kerja sendiri?", name: "q17", type: "S" },
+            { question: "Apakah kamu merasa senang ketika bisa membuat orang lain merasa lebih baik?", name: "q18", type: "S" },
+            { question: "Apakah kamu tertarik mengajar, memandu, atau mendampingi orang lain?", name: "q19", type: "S" },
+            { question: "Apakah kamu senang berada di kegiatan yang melibatkan banyak orang?", name: "q20", type: "S" },
+            { question: "Apakah kamu suka menjadi pemimpin dalam kelompok?", name: "q21", type: "E" },
+            { question: "Apakah kamu percaya diri berbicara di depan orang banyak?", name: "q22", type: "E" },
+            { question: "Apakah kamu tertarik memulai proyek atau usaha kecil-kecilan?", name: "q23", type: "E" },
+            { question: "Apakah kamu suka mengajak orang lain untuk bekerja sama dalam suatu rencana?", name: "q24", type: "E" },
+            { question: "Apakah kamu menikmati membuat aturan, mengambil keputusan, atau mengarahkan orang lain?", name: "q25", type: "E" },
+            { question: "Apakah kamu suka tugas yang perlu ketelitian seperti mencatat dan mengurutkan data?", name: "q26", type: "C" },
+            { question: "Apakah kamu nyaman mengikuti prosedur dan aturan yang jelas?", name: "q27", type: "C" },
+            { question: "Apakah kamu tertarik pada pekerjaan administrasi seperti mengarsipkan dokumen?", name: "q28", type: "C" },
+            { question: "Apakah kamu merasa lebih mudah bekerja dengan langkah-langkah yang pasti?", name: "q29", type: "C" },
+            { question: "Apakah kamu suka membuat jadwal dan merapikan aktivitas?", name: "q30", type: "C" }
+        ];
+
+        // --- 2. DAFTAR HASIL TAHAP 1 (RIASEC) ---
+        const careerResults = {
+            "R": { title: "Minat Realistic (Si Pekerja)", description: "Kamu adalah tipe yang praktis, suka bekerja dengan tangan, mesin, dan hal-hal nyata. Kamu menikmati pekerjaan yang hasilnya bisa dilihat langsung." },
+            "I": { title: "Minat Investigative (Si Pemikir)", description: "Kamu adalah tipe analis. Kamu suka memecahkan masalah, meneliti, dan bekerja dengan ide. Kamu penasaran dan logis." },
+            "A": { title: "Minat Artistic (Si Kreator)", description: "Kamu adalah tipe yang ekspresif dan imajinatif. Kamu suka bekerja di luar struktur, menciptakan hal baru, dan mengekspresikan diri lewat seni." },
+            "S": { title: "Minat Social (Si Penolong)", description: "Kamu adalah tipe yang suka bekerja dengan orang lain. Kamu senang membantu, mengajar, dan berinteraksi. Kamu memiliki empati yang tinggi." },
+            "E": { title: "Minat Enterprising (Si Pemimpin)", description: "Kamu adalah tipe yang persuasif dan ambisius. Kamu suka memimpin, memengaruhi orang lain, dan mengambil inisiatif untuk mencapai tujuan." },
+            "C": { title: "Minat Conventional (Si Pengatur)", description: "Kamu adalah tipe yang teratur, rapi, dan teliti. Kamu suka bekerja dengan data, mengikuti prosedur, dan hal-hal yang pasti." }
+        };
+
+        // --- 3. DAFTAR HASIL TAHAP 2 (SEKOLAH) ---
+        const schoolResults = {
+            "smk": { title: "Rekomendasi: SMK (Sekolah Menengah Kejuruan)", description: "Pilihanmu menunjukkan kamu lebih suka pembelajaran yang praktis dan ingin cepat memiliki keahlian khusus untuk dunia kerja. SMK adalah pilihan tepat untuk mengasah keterampilan teknis secara mendalam." },
+            "sma": { title: "Rekomendasi: SMA (Sekolah Menengah Atas)", description: "Pilihanmu menunjukkan kamu menikmati pembelajaran teori, analisis, dan ingin melanjutkan ke jenjang universitas. SMA akan memberimu fondasi akademik yang kuat di bidang IPA, IPS, atau Bahasa." },
+            "ma": { title: "Rekomendasi: MA (Madrasah Aliyah)", description: "Pilihanmu menunjukkan kamu ingin menyeimbangkan antara ilmu pengetahuan umum dan pendalaman ilmu agama. MA adalah pilihan yang sangat baik untuk mendapatkan lingkungan belajar yang religius sekaligus mempersiapkan diri untuk universitas." }
+        };
+
+        // --- 4. LOGIKA FORM INFO PENGGUNA ---
+        const userForm = document.getElementById('user-form');
+        const riasecForm = document.getElementById('riasec-form');
+        
+        userForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            userData.nama = document.getElementById('user-name').value;
+            userData.kelas = document.getElementById('user-class').value;
+            userForm.style.display = 'none';
+            riasecForm.style.display = 'block';
+            window.scrollTo(0, 0);
+        });
+
+
+        // --- 5. LOGIKA UNTUK MENAMPILKAN PERTANYAAN TAHAP 1 ---
+        const questionsWrapperRIASEC = document.getElementById('questions-wrapper-riasec');
+        questionsRIASEC.forEach((q, index) => {
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'question';
+            questionDiv.innerHTML = `
+                <p>${index + 1}. ${q.question}</p>
+                <div class="options" style="flex-direction: row;">
+                    <label class="option" style="flex-grow: 1;"><input type="radio" name="${q.name}" value="${q.type}" required> Iya</label>
+                    <label class="option" style="flex-grow: 1;"><input type="radio" name="${q.name}" value="none"> Tidak</label>
+                </div>
+            `;
+            questionsWrapperRIASEC.appendChild(questionDiv);
+        });
+
+        // --- 6. LOGIKA SUBMIT TAHAP 1 (RIASEC) ---
+        const riasecResultContainer = document.getElementById('riasec-result-container');
+        const schoolForm = document.getElementById('school-form');
+
+        riasecForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const scores = { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 };
+            const formData = new FormData(riasecForm);
+            for (let [name, value] of formData.entries()) {
+                if (value !== 'none') { scores[value]++; }
+            }
+
+            // --- PERUBAHAN UNTUK SKOR SERI ---
+
+            // 1. Cari nilai skor tertinggi
+            const allScores = Object.values(scores);
+            const highestScore = Math.max(...allScores);
+
+            // 2. Kumpulkan SEMUA tipe yang memiliki skor tertinggi (skor > 0)
+            let highestTypes = []; // Pakai array, bukan string
+            if (highestScore > 0) {
+                for (let type in scores) {
+                    if (scores[type] === highestScore) {
+                        highestTypes.push(type); // Contoh: ["R", "A"]
+                    }
+                }
+            } else {
+                // Kasus khusus jika siswa menjawab "Tidak" untuk semua
+                highestTypes = ["(Tidak ada minat dominan)"]; 
+            }
+
+            // 3. Simpan hasil ke variabel global
+            finalRIASECScores = scores;
+            finalRIASECType = highestTypes.join(", "); // Simpan sebagai "R, A" untuk Google Sheet
+
+            // 4. Gabungkan judul dan deskripsi dari semua tipe tertinggi
+            let combinedTitle = "";
+            let combinedDescription = "";
+
+            if (highestTypes[0] === "(Tidak ada minat dominan)") {
+                combinedTitle = "Belum Ada Minat Dominan";
+                combinedDescription = "<p>Kamu belum menunjukkan minat yang kuat pada salah satu tipe. Tidak apa-apa! Ini wajar di usiamu. Coba eksplorasi lebih banyak kegiatan untuk menemukan apa yang kamu sukai.</p>";
+            } else {
+                combinedTitle = highestTypes
+                    .map(type => careerResults[type].title) // Ambil semua judul
+                    .join(" & "); // Gabungkan dengan " & "
+
+                combinedDescription = highestTypes
+                    .map(type => `<p><strong>${careerResults[type].title}:</strong> ${careerResults[type].description}</p>`) // Ambil semua deskripsi
+                    .join(""); // Gabungkan
+            }
+
+            // 5. Tampilkan hasil gabungan di UI
+            document.getElementById('riasec-title').innerHTML = combinedTitle;
+            document.getElementById('riasec-description').innerHTML = combinedDescription;
+            document.getElementById('riasec-scores').innerText = `Realistic: ${scores.R} | Investigative: ${scores.I} | Artistic: ${scores.A} | Social: ${scores.S} | Enterprising: ${scores.E} | Conventional: ${scores.C}`;
+            
+            // --- AKHIR PERUBAHAN ---
+            
+            riasecForm.style.display = 'none';
+            riasecResultContainer.style.display = 'block';
+            schoolForm.style.display = 'block';
+            riasecResultContainer.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // --- 7. LOGIKA PERCABANGAN TAHAP 2 (SEKOLAH) ---
+        const q31Radios = document.querySelectorAll('input[name="q31"]');
+        const q32Wrapper = document.getElementById('q32-wrapper');
+        const q32Radios = document.querySelectorAll('input[name="q32"]');
+        const q33Wrapper = document.getElementById('q33-wrapper');
+        q31Radios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.querySelectorAll('input[name="q32"]').forEach(r => r.required = false);
+                document.querySelectorAll('input[name="q33"]').forEach(r => r.required = false);
+                if (this.value === 'teori') {
+                    q32Wrapper.style.display = 'block';
+                    document.querySelectorAll('input[name="q32"]').forEach(r => r.required = true);
+                } else {
+                    q32Wrapper.style.display = 'none';
+                    q33Wrapper.style.display = 'none';
+                }
+            });
+        });
+        q32Radios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.querySelectorAll('input[name="q33"]').forEach(r => r.required = false);
+                if (this.value === 'kuliah') {
+                    q33Wrapper.style.display = 'block';
+                    document.querySelectorAll('input[name="q33"]').forEach(r => r.required = true);
+                } else {
+                    q33Wrapper.style.display = 'none';
+                }
+            });
+        });
+
+        // --- 8. LOGIKA SUBMIT TAHAP 2 (SEKOLAH) & SIMPAN KE GOOGLE SHEETS ---
+        const schoolResultContainer = document.getElementById('school-result-container');
+        const submitSchoolBtn = document.getElementById('submit-school');
+        const saveStatus = document.getElementById('save-status');
+
+        schoolForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            let finalOutcome = "";
+            const q31Value = document.querySelector('input[name="q31"]:checked').value;
+            
+            if (q31Value === 'smk') finalOutcome = 'smk';
+            else if (q31Value === 'ma') finalOutcome = 'ma';
+            else if (q31Value === 'teori') {
+                const q32Value = document.querySelector('input[name="q32"]:checked').value;
+                if (q32Value === 'smk') finalOutcome = 'smk';
+                else if (q32Value === 'ma') finalOutcome = 'ma';
+                else if (q32Value === 'kuliah') {
+                    const q33Value = document.querySelector('input[name="q33"]:checked').value;
+                    if (q33Value === 'sma') finalOutcome = 'sma';
+                    else if (q33Value === 'ma') finalOutcome = 'ma';
+                }
+            }
+
+            finalSchoolResult = finalOutcome;
+
+            if (finalSchoolResult) {
+                const result = schoolResults[finalSchoolResult];
+                document.getElementById('school-title').innerText = result.title;
+                document.getElementById('school-description').innerText = result.description;
+                schoolResultContainer.style.display = 'block';
+                schoolResultContainer.scrollIntoView({ behavior: 'smooth' });
+                submitSchoolBtn.disabled = true;
+                submitSchoolBtn.innerText = "Menyimpan data...";
+                saveStatus.innerText = "Sedang menyimpan hasil...";
+                
+                // Kirim data ke Google Sheets
+                saveToGoogleSheets();
+            }
+        });
+
+        // --- 9. FUNGSI BARU UNTUK MENYIMPAN DATA (DENGAN FIX 'text/plain') ---
+        async function saveToGoogleSheets() {
+            // Siapkan data payload
+            const dataToSave = {
+                nama: userData.nama,
+                kelas: userData.kelas,
+                tipeMinat: finalRIASECType, // Ini sekarang bisa "R, A"
+                skor: finalRIASECScores,
+                rekomendasiSekolah: finalSchoolResult.toUpperCase()
+            };
+
+            try {
+                // Kirim data menggunakan fetch API
+                const response = await fetch(appsScriptURL, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8', 
+                    },
+                    body: JSON.stringify(dataToSave)
+                });
+
+                const result = await response.json();
+
+                if (result.result === "success") {
+                    submitSchoolBtn.innerText = "Data Berhasil Disimpan";
+                    saveStatus.innerText = "Hasil Anda telah berhasil disimpan.";
+                    saveStatus.style.color = "green";
+                } else {
+                    throw new Error(result.message || "Unknown error");
+                }
+            } catch (error) {
+                console.error('Error saving to Google Sheets:', error);
+                submitSchoolBtn.innerText = "Gagal Menyimpan";
+                saveStatus.innerText = "Gagal menyimpan data. Coba lagi atau hubungi admin.";
+                saveStatus.style.color = "red";
+                submitSchoolBtn.disabled = false;
+            }
+        }
+
+    </script>
+</body>
+</html>
