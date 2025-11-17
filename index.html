@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asesmen Karir RIASEC (Versi Lucu)</title>
+    <title>Asesmen Langkah Karier</title>
     
     <style>
         /* === FONT & TEMA DASAR "LUCU" === */
         body {
-            /* Font bulat, lebih ramah */
             font-family: "Arial Rounded MT Bold", "Helvetica Rounded", Arial, sans-serif;
-            background-color: #f7faff; /* Latar biru sangat-sangat muda */
+            background-color: #f7faff;
             color: #444;
             margin: 0;
             padding: 20px;
@@ -21,11 +20,12 @@
             max-width: 700px;
             margin: 20px auto;
             background-color: #ffffff;
-            border-radius: 24px; /* Sudut sangat bulat */
-            box-shadow: 0 10px 40px rgba(13, 71, 161, 0.08); /* Bayangan lebih soft */
+            border-radius: 24px;
+            box-shadow: 0 10px 40px rgba(13, 71, 161, 0.08);
             padding: 30px 40px;
             border: 1px solid #fff;
             animation: fadeIn 0.6s ease-out;
+            overflow: hidden; /* Mencegah animasi keluar batas */
         }
 
         @keyframes fadeIn {
@@ -33,43 +33,47 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* === VISUAL HALAMAN DEPAN (SESUAI PERMINTAAN) === */
-        .welcome-visual {
-            font-size: 4.5em; /* Emoji besar */
+        /* === VISUAL HALAMAN DEPAN BARU (PERMINTAAN #2) === */
+        .welcome-icon-container {
             text-align: center;
-            margin-bottom: -10px;
-            /* Animasi melambai "lucu" */
-            animation: wave 2.5s infinite;
-            transform-origin: 70% 70%;
-            display: block;
+            margin-bottom: 15px;
+            margin-top: 10px;
         }
-
-        @keyframes wave {
-            0% { transform: rotate(0.0deg) }
-            10% { transform: rotate(14.0deg) }
-            20% { transform: rotate(-8.0deg) }
-            30% { transform: rotate(14.0deg) }
-            40% { transform: rotate(-4.0deg) }
-            50% { transform: rotate(10.0deg) }
-            60% { transform: rotate(0.0deg) }
-            100% { transform: rotate(0.0deg) }
+        .welcome-icon-bubble {
+            display: inline-block;
+            font-size: 2.5em; /* Emoji di dalam bubble */
+            padding: 15px;
+            border-radius: 50%;
+            margin: 0 10px;
+            line-height: 1;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            /* Animasi melayang "lucu" */
+            animation: bobble 1.8s infinite ease-in-out;
         }
+        /* Memberi delay animasi yang berbeda */
+        .welcome-icon-bubble:nth-child(1) { background-color: #e6f2ff; }
+        .welcome-icon-bubble:nth-child(2) { background-color: #fff8e1; animation-delay: 0.3s; }
+        .welcome-icon-bubble:nth-child(3) { background-color: #eaf6ff; animation-delay: 0.6s; }
 
+        @keyframes bobble {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
 
         /* === TIPOGRAFI & JUDUL === */
         h1, h2, h3 {
-            color: #0D47A1; /* Biru tua yang solid */
+            color: #0D47A1;
             text-align: center;
             font-weight: 700;
         }
-        h1 { font-size: 1.8em; margin-bottom: 10px; }
+        h1 { font-size: 1.8em; margin-bottom: 15px; }
         h2 { font-size: 1.5em; margin-top: 30px; }
-        h3 { font-size: 1.3em; color: #0096FF; /* Biru cerah untuk sub-judul hasil */ }
+        h3 { font-size: 1.3em; color: #0096FF; }
 
         /* === PERTANYAAN & INPUT AWAL === */
         .question {
             margin-bottom: 25px;
-            border-bottom: 1px solid #f0f4f8; /* Garis pemisah super halus */
+            border-bottom: 1px solid #f0f4f8;
             padding-bottom: 20px;
         }
 
@@ -86,14 +90,14 @@
             padding: 14px 18px;
             margin-top: 5px;
             border: 2px solid #e0e8f0;
-            border-radius: 12px; /* Input bulat */
+            border-radius: 12px;
             font-size: 1em;
             font-family: "Arial Rounded MT Bold", "Helvetica Rounded", Arial, sans-serif;
             transition: border-color 0.2s, box-shadow 0.2s;
         }
         .basic-input:focus {
             border-color: #0096FF;
-            box-shadow: 0 0 10px rgba(0, 150, 255, 0.15); /* Bayangan biru halus */
+            box-shadow: 0 0 10px rgba(0, 150, 255, 0.15);
             outline: none;
         }
 
@@ -108,7 +112,7 @@
             display: block;
             background-color: #f8fbff;
             padding: 14px 18px;
-            border-radius: 12px; /* Pilihan bulat */
+            border-radius: 12px;
             cursor: pointer;
             border: 2px solid #e8f0f8;
             text-align: left;
@@ -117,7 +121,7 @@
         }
 
         .option:hover {
-            transform: scale(1.02); /* Sedikit membesar saat disentuh */
+            transform: scale(1.02);
             box-shadow: 0 6px 15px rgba(0, 150, 255, 0.08);
             border-color: #0096FF;
             background-color: #fff;
@@ -125,7 +129,7 @@
 
         .option input[type="radio"] {
             margin-right: 12px;
-            accent-color: #0096FF; /* Tombol radio jadi biru */
+            accent-color: #0096FF;
             transform: scale(1.1);
         }
 
@@ -134,10 +138,10 @@
             display: block;
             width: 100%;
             padding: 16px 24px;
-            background-color: #0096FF; /* Biru cerah yang "pop" */
+            background-color: #0096FF;
             color: white;
             border: none;
-            border-radius: 50px; /* Tombol bentuk kapsul */
+            border-radius: 50px; /* Kapsul */
             font-size: 1.15em;
             font-weight: bold;
             font-family: "Arial Rounded MT Bold", "Helvetica Rounded", Arial, sans-serif;
@@ -148,7 +152,7 @@
         }
 
         .submit-btn:hover {
-            transform: translateY(-3px) scale(1.02); /* Efek melayang */
+            transform: translateY(-3px) scale(1.02);
             box-shadow: 0 6px 20px rgba(0, 150, 255, 0.4);
         }
 
@@ -162,21 +166,21 @@
         /* === KOTAK HASIL (RESULT BOX) === */
         .result-box {
             margin-top: 30px;
-            background-color: #eaf6ff; /* Latar biru muda */
+            background-color: #eaf6ff;
             border: 1px solid #d0eaff;
             padding: 25px 30px;
-            border-radius: 16px; /* Bulat */
-            border-left: 8px solid #0096FF; /* Aksen biru tebal di kiri */
+            border-radius: 16px;
+            border-left: 8px solid #0096FF;
         }
 
         #riasec-result-container {
             text-align: center;
         }
 
-        /* === VISUAL DI KALIMAT HASIL (SESUAI PERMINTAAN) === */
+        /* === VISUAL DI KALIMAT HASIL (PERMINTAAN #3 di CSS) === */
         #riasec-description h4 {
             color: #0D47A1;
-            background-color: #fff; /* Latar putih */
+            background-color: #fff;
             padding: 12px 15px;
             border-radius: 12px;
             border: 1px solid #d0eaff;
@@ -185,11 +189,8 @@
             margin-bottom: 15px;
         }
 
-        #riasec-description p {
-            margin-bottom: 10px;
-        }
+        #riasec-description p { margin-bottom: 10px; }
         
-        /* Ini membuat emoji + sub-judul (spt 🔧 SMK) lebih menonjol */
         #riasec-description p > strong {
             color: #0D47A1; 
             font-weight: 700;
@@ -201,7 +202,7 @@
             margin-top: 5px;
             margin-bottom: 15px;
             padding-left: 30px;
-            list-style-type: '👉'; /* Ganti bullet point jadi emoji */
+            list-style-type: '👉'; /* Bullet point emoji */
         }
         #riasec-description li {
             margin-bottom: 5px;
@@ -216,6 +217,21 @@
             border-radius: 10px;
             border: 2px dashed #0096FF;
         }
+        
+        /* === VISUAL HALAMAN HASIL AKHIR (PERMINTAAN #3 di CSS) === */
+        #school-emoji {
+            font-size: 5em; /* Emoji super besar */
+            text-align: center;
+            margin-bottom: -10px;
+            line-height: 1;
+            animation: popIn 0.5s ease-out;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
 
         /* === VISIBILITAS FORM === */
         .dynamic-question-wrapper {
@@ -234,10 +250,31 @@
     <div id="quiz-container">
         
         <form id="user-form">
-            <div class="welcome-visual">👋</div>
             
-            <h1>Selamat Datang!</h1>
-            <p style="text-align: center;">Silakan isi nama dan kelas Anda untuk memulai asesmen.</p>
+            <div class="welcome-icon-container">
+                <span class="welcome-icon-bubble">🔍</span>
+                <span class="welcome-icon-bubble">💡</span>
+                <span class="welcome-icon-bubble">🚀</span>
+            </div>
+            
+            <h1>Selamat Datang di Langkah Karier!</h1>
+            
+            <p style="text-align: center; font-size: 1.1em; color: #555;">
+                Di sini, kamu bisa menemukan jawaban dari pertanyaan penting:<br>
+                <strong>“Setelah lulus SMP… aku harus pilih kemana?”</strong>
+            </p>
+            <p style="text-align: left; color: #666; margin-top: 15px;">
+                Tenang, kamu nggak perlu bingung sendiri. Website ini akan membantu kamu mengenali minat, kekuatan, dan arah pendidikan yang paling cocok untuk masa depanmu. Cukup isi tesnya, dan kamu akan mendapatkan rekomendasi jenjang dan jurusan yang sesuai dengan kepribadianmu.
+            </p>
+            <p style="text-align: left; font-size: 0.95em; color: #666; background-color: #f8faff; padding: 12px 15px; border-radius: 12px; border-left: 4px solid #0096FF;">
+                <em>Website Langkah Karier dirancang khusus oleh Tim Whitmore Center, menggunakan pendekatan psikologi karier yang terpercaya dan mudah dipahami oleh siswa SMP.</em>
+            </p>
+            <p style="text-align: center; font-weight: bold; font-size: 1.05em; color: #0D47A1; margin-top: 15px;">
+                Ayo mulai perjalananmu menemukan masa depan yang tepat buat kamu!
+            </p>
+            
+            <hr style="border: 0; border-top: 1px solid #f0f4f8; margin: 25px 0;">
+            
             <div class="question">
                 <p>Nama Lengkap</p>
                 <input type="text" id="user-name" class="basic-input" placeholder="Masukkan nama Anda..." required>
@@ -298,6 +335,8 @@
         </form>
 
         <div id="school-result-container" class="result-box">
+            <h3 id="school-emoji"></h3> 
+            
             <h2>Hasil Akhir Rekomendasi Sekolah:</h2>
             <h3 id="school-title"></h3>
             <p id="school-description"></p>
@@ -306,14 +345,10 @@
     </div>
     <script>
         
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        // !!! TEMPELKAN URL WEB APP ANDA DARI GOOGLE APPS SCRIPT DI SINI !!!
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         const appsScriptURL = "https://script.google.com/macros/s/AKfycbzF6oP9qdUhUhdBCno7ETQGuj2Ftycf4EGvRRtddnPltWbiFh4oQ02tSZLAtHDlURycdg/exec";
         
-        // --- VARIABEL GLOBAL UNTUK MENYIMPAN HASIL ---
         let finalRIASECScores = {};
-        let finalRIASECType = ""; // Sekarang bisa berisi "R, A"
+        let finalRIASECType = "";
         let finalSchoolResult = "";
         let userData = {
             nama: "",
@@ -355,7 +390,6 @@
         ];
 
         // --- 2. DAFTAR HASIL TAHAP 1 (RIASEC) ---
-        // (Deskripsi detail Anda sudah ada di sini, ini akan bekerja dengan CSS baru)
         const careerResults = {
             "R": { 
                 title: "Minat Realistic (Si Pekerja)", 
@@ -523,11 +557,12 @@
             }
         };
 
-        // --- 3. DAFTAR HASIL TAHAP 2 (SEKOLAH) ---
+        // --- 3. DAFTAR HASIL TAHAP 2 (PERMINTAAN #3 di JS) ---
+        // EMOJI DITAMBAHKAN DI SINI
         const schoolResults = {
-            "smk": { title: "Rekomendasi: SMK (Sekolah Menengah Kejuruan)", description: "Pilihanmu menunjukkan kamu lebih suka pembelajaran yang praktis dan ingin cepat memiliki keahlian khusus untuk dunia kerja. SMK adalah pilihan tepat untuk mengasah keterampilan teknis secara mendalam." },
-            "sma": { title: "Rekomendasi: SMA (Sekolah Menengah Atas)", description: "Pilihanmu menunjukkan kamu menikmati pembelajaran teori, analisis, dan ingin melanjutkan ke jenjang universitas. SMA akan memberimu fondasi akademik yang kuat di bidang IPA, IPS, atau Bahasa." },
-            "ma": { title: "Rekomendasi: MA (Madrasah Aliyah)", description: "Pilihanmu menunjukkan kamu ingin menyeimbangkan antara ilmu pengetahuan umum dan pendalaman ilmu agama. MA adalah pilihan yang sangat baik untuk mendapatkan lingkungan belajar yang religius sekaligus mempersiapkan diri untuk universitas." }
+            "smk": { title: "Rekomendasi: SMK (Sekolah Menengah Kejuruan)", emoji: "🛠️", description: "Pilihanmu menunjukkan kamu lebih suka pembelajaran yang praktis dan ingin cepat memiliki keahlian khusus untuk dunia kerja. SMK adalah pilihan tepat untuk mengasah keterampilan teknis secara mendalam." },
+            "sma": { title: "Rekomendasi: SMA (Sekolah Menengah Atas)", emoji: "📚", description: "Pilihanmu menunjukkan kamu menikmati pembelajaran teori, analisis, dan ingin melanjutkan ke jenjang universitas. SMA akan memberimu fondasi akademik yang kuat di bidang IPA, IPS, atau Bahasa." },
+            "ma": { title: "Rekomendasi: MA (Madrasah Aliyah)", emoji: "🕌", description: "Pilihanmu menunjukkan kamu ingin menyeimbangkan antara ilmu pengetahuan umum dan pendalaman ilmu agama. MA adalah pilihan yang sangat baik untuk mendapatkan lingkungan belajar yang religius sekaligus mempersiapkan diri untuk universitas." }
         };
 
         // --- 4. LOGIKA FORM INFO PENGGUNA ---
@@ -571,11 +606,8 @@
                 if (value !== 'none') { scores[value]++; }
             }
 
-            // 1. Cari nilai skor tertinggi
             const allScores = Object.values(scores);
             const highestScore = Math.max(...allScores);
-
-            // 2. Kumpulkan SEMUA tipe yang memiliki skor tertinggi (skor > 0)
             let highestTypes = []; 
             if (highestScore > 0) {
                 for (let type in scores) {
@@ -587,11 +619,9 @@
                 highestTypes = ["(Tidak ada minat dominan)"]; 
             }
 
-            // 3. Simpan hasil ke variabel global
             finalRIASECScores = scores;
             finalRIASECType = highestTypes.join(", "); 
 
-            // 4. Gabungkan judul dan deskripsi dari semua tipe tertinggi
             let combinedTitle = "";
             let combinedDescription = "";
 
@@ -608,12 +638,10 @@
                     .join("<hr style='border-top: 1px dashed #0096FF; margin: 25px 0;'>");
             }
 
-            // 5. Tampilkan hasil gabungan di UI
             document.getElementById('riasec-title').innerHTML = combinedTitle;
             document.getElementById('riasec-description').innerHTML = combinedDescription;
             document.getElementById('riasec-scores').innerText = `Realistic: ${scores.R} | Investigative: ${scores.I} | Artistic: ${scores.A} | Social: ${scores.S} | Enterprising: ${scores.E} | Conventional: ${scores.C}`;
             
-            // Tampilkan bagian selanjutnya
             riasecForm.style.display = 'none';
             riasecResultContainer.style.display = 'block';
             schoolForm.style.display = 'block';
@@ -630,11 +658,8 @@
             radio.addEventListener('change', function() {
                 document.querySelectorAll('input[name="q32"]').forEach(r => r.required = false);
                 document.querySelectorAll('input[name="q33"]').forEach(r => r.required = false);
-                
-                // Reset tampilan
                 q32Wrapper.style.display = 'none';
                 q33Wrapper.style.display = 'none';
-                
                 if (this.value === 'teori') {
                     q32Wrapper.style.display = 'block';
                     document.querySelectorAll('input[name="q32"]').forEach(r => r.required = true);
@@ -644,10 +669,7 @@
         q32Radios.forEach(radio => {
             radio.addEventListener('change', function() {
                 document.querySelectorAll('input[name="q33"]').forEach(r => r.required = false);
-                
-                // Reset tampilan
                 q33Wrapper.style.display = 'none';
-
                 if (this.value === 'kuliah') {
                     q33Wrapper.style.display = 'block';
                     document.querySelectorAll('input[name="q33"]').forEach(r => r.required = true);
@@ -683,6 +705,11 @@
 
             if (finalSchoolResult) {
                 const result = schoolResults[finalSchoolResult];
+                
+                // === PERMINTAAN #3 di JS ===
+                // TAMPILKAN EMOJI DI HALAMAN HASIL
+                document.getElementById('school-emoji').innerText = result.emoji; 
+                
                 document.getElementById('school-title').innerText = result.title;
                 document.getElementById('school-description').innerText = result.description;
                 schoolResultContainer.style.display = 'block';
@@ -691,18 +718,16 @@
                 submitSchoolBtn.innerText = "Menyimpan data...";
                 saveStatus.innerText = "Sedang menyimpan hasil...";
                 
-                // Kirim data ke Google Sheets
                 saveToGoogleSheets();
             }
         });
 
         // --- 9. FUNGSI BARU UNTUK MENYIMPAN DATA (DENGAN FIX 'text/plain') ---
         async function saveToGoogleSheets() {
-            // Siapkan data payload
             const dataToSave = {
                 nama: userData.nama,
                 kelas: userData.kelas,
-                tipeMinat: finalRIASECType, // Ini sekarang bisa "R, A"
+                tipeMinat: finalRIASECType,
                 skorR: finalRIASECScores.R,
                 skorI: finalRIASECScores.I,
                 skorA: finalRIASECScores.A,
@@ -713,7 +738,6 @@
             };
 
             try {
-                // Kirim data menggunakan fetch API
                 const response = await fetch(appsScriptURL, {
                     method: 'POST',
                     mode: 'cors',
