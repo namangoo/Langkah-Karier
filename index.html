@@ -33,7 +33,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* === VISUAL HALAMAN DEPAN BARU (PERMINTAAN #2) === */
+        /* === VISUAL HALAMAN DEPAN BARU === */
         .welcome-icon-container {
             text-align: center;
             margin-bottom: 15px;
@@ -41,16 +41,14 @@
         }
         .welcome-icon-bubble {
             display: inline-block;
-            font-size: 2.5em; /* Emoji di dalam bubble */
+            font-size: 2.5em;
             padding: 15px;
             border-radius: 50%;
             margin: 0 10px;
             line-height: 1;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            /* Animasi melayang "lucu" */
             animation: bobble 1.8s infinite ease-in-out;
         }
-        /* Memberi delay animasi yang berbeda */
         .welcome-icon-bubble:nth-child(1) { background-color: #e6f2ff; }
         .welcome-icon-bubble:nth-child(2) { background-color: #fff8e1; animation-delay: 0.3s; }
         .welcome-icon-bubble:nth-child(3) { background-color: #eaf6ff; animation-delay: 0.6s; }
@@ -141,7 +139,7 @@
             background-color: #0096FF;
             color: white;
             border: none;
-            border-radius: 50px; /* Kapsul */
+            border-radius: 50px;
             font-size: 1.15em;
             font-weight: bold;
             font-family: "Arial Rounded MT Bold", "Helvetica Rounded", Arial, sans-serif;
@@ -176,35 +174,79 @@
         #riasec-result-container {
             text-align: center;
         }
-
-        /* === VISUAL DI KALIMAT HASIL (PERMINTAAN #3 di CSS) === */
-        #riasec-description h4 {
-            color: #0D47A1;
+        
+        /* === VISUAL DI KALIMAT HASIL RIASEC BARU (PERMINTAAN INI) === */
+        .riasec-result-item {
             background-color: #fff;
-            padding: 12px 15px;
-            border-radius: 12px;
             border: 1px solid #d0eaff;
-            border-left: 6px solid #FFC107; /* Aksen kuning cerah! */
+            border-radius: 12px;
+            padding: 20px;
             margin-top: 20px;
-            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0, 150, 255, 0.05);
+            text-align: left;
         }
 
-        #riasec-description p { margin-bottom: 10px; }
+        .riasec-result-item h4 {
+            display: flex;
+            align-items: center; 
+            justify-content: center;
+            color: #0D47A1;
+            padding: 0; 
+            border: none;
+            border-left: none;
+            margin-top: 0; 
+            margin-bottom: 15px;
+            font-size: 1.5em; 
+            text-align: center; 
+        }
+
+        /* === PERUBAHAN DI SINI === */
+        .riasec-result-item h4 .riasec-emoji-icon {
+            font-size: 1.5em; 
+            margin-right: 15px; 
+            /* Animasi bounceIn diganti dengan wigglePulse */
+            animation: wigglePulse 3s infinite ease-in-out; 
+        }
+
+        /* Animasi bounceIn dihapus, diganti dengan wigglePulse */
+        @keyframes wigglePulse {
+            0% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.1) rotate(-4deg); }
+            50% { transform: scale(1) rotate(0deg); }
+            75% { transform: scale(1.1) rotate(4deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+        /* === AKHIR PERUBAHAN === */
+
+
+        /* Ini adalah sub-judul 'Arah Pendidikan' */
+        .riasec-result-item h5 { 
+            color: #0D47A1;
+            background-color: #f7faff; 
+            padding: 10px 15px;
+            border-radius: 8px;
+            border-left: 5px solid #0096FF;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
         
-        #riasec-description p > strong {
+        .riasec-result-item p { margin-bottom: 10px; }
+
+        .riasec-result-item p > strong {
             color: #0D47A1; 
             font-weight: 700;
             display: inline-block;
             margin-bottom: 5px;
         }
 
-        #riasec-description ul {
+        .riasec-result-item ul {
             margin-top: 5px;
             margin-bottom: 15px;
             padding-left: 30px;
-            list-style-type: '👉'; /* Bullet point emoji */
+            list-style-type: '👉';
         }
-        #riasec-description li {
+        .riasec-result-item li {
             margin-bottom: 5px;
             padding-left: 8px;
         }
@@ -218,9 +260,9 @@
             border: 2px dashed #0096FF;
         }
         
-        /* === VISUAL HALAMAN HASIL AKHIR (PERMINTAAN #3 di CSS) === */
+        /* === VISUAL HALAMAN HASIL AKHIR === */
         #school-emoji {
-            font-size: 5em; /* Emoji super besar */
+            font-size: 5em;
             text-align: center;
             margin-bottom: -10px;
             line-height: 1;
@@ -295,8 +337,8 @@
 
         <div id="riasec-result-container" class="result-box">
             <h2>Tipe Minat Terkuat Anda:</h2>
-            <h3 id="riasec-title"></h3>
-            <div id="riasec-description" style="text-align: left;"></div>
+            <h3 id="riasec-overall-title"></h3> 
+            <div id="riasec-description"></div> 
             <hr style="border: 0; border-top: 1px solid #b3d7ff; margin: 20px 0;">
             <p><strong>Rincian Skor Anda:</strong></p>
             <p id="riasec-scores"></p>
@@ -390,14 +432,14 @@
         ];
 
         // --- 2. DAFTAR HASIL TAHAP 1 (RIASEC) ---
+        // (Emoji sudah ditambahkan di sini, akan digunakan oleh JS)
         const careerResults = {
             "R": { 
-                title: "Minat Realistic (Si Pekerja)", 
+                title: "Realistic (Si Pekerja)", emoji: "🛠️",
                 description: `
-                    <h4>🌟 Hasil RIASEC Kamu: Realistic (Si Pekerja)</h4>
                     <p>Kamu adalah tipe yang suka praktik langsung dan nyaman bekerja dengan alat, mesin, teknologi, atau aktivitas lapangan. Kamu lebih mudah paham saat mencoba sendiri daripada hanya membaca teori. Kamu senang kalau bisa melihat hasil nyata dari usaha kamu.</p>
                     <p><strong>Ciri-ciri kamu:</strong> praktis dan suka hal nyata, tertarik pada alat, mesin, teknologi, suka langkah-langkah jelas, belajar cepat lewat praktik, teliti dan fokus, tidak terlalu suka teori atau banyak bicara.</p>
-                    <h4>🎓 Arah Pendidikan Setelah SMP</h4>
+                    <h5>🎓 Arah Pendidikan Setelah SMP</h5>
                     <p><strong>🔧 SMK – Pilihan Paling Cocok</strong><br>
                     Karena kamu tipe Realistic, lingkungan penuh praktik sangat sesuai untukmu.</p>
                     <p>Jurusan yang cocok:</p>
@@ -419,12 +461,11 @@
                 ` 
             },
             "I": { 
-                title: "Minat Investigative (Si Pemikir)", 
+                title: "Investigative (Si Pemikir)", emoji: "🔬",
                 description: `
-                    <h4>🌟 Hasil RIASEC Kamu: Investigative (Si Peneliti / Si Pemikir)</h4>
                     <p>Kamu adalah tipe yang suka mencari tahu, menganalisis, dan memecahkan masalah dengan berpikir mendalam. Kamu nyaman bekerja dengan ide, data, informasi, rumus, eksperimen, dan hal-hal yang membutuhkan logika. Kamu lebih mudah paham saat menyelidiki, membaca, atau mengamati pola daripada melakukan aktivitas fisik.</p>
                     <p><strong>Ciri-ciri Kamu:</strong> suka berpikir, meneliti, dan menganalisis, penasaran dan suka bertanya “mengapa?”, menyukai pelajaran sains, matematika, teknologi, senang mengamati pola, eksperimen, dan mencari solusi, lebih suka bekerja sendiri daripada banyak bicara, teliti, fokus, dan suka tantangan logis, tidak terlalu suka pekerjaan fisik atau yang terlalu sosial.</p>
-                    <h4>🎓 Arah Pendidikan Setelah SMP</h4>
+                    <h5>🎓 Arah Pendidikan Setelah SMP</h5>
                     <p><strong>🔬 SMA – Pilihan Paling Cocok</strong><br>
                     SMA memberi kamu ruang untuk memperkuat logika, teori, dan sains, yang sangat sesuai untuk tipe Investigative menurut teori Holland.</p>
                     <p>Jurusan yang cocok: MIPA (Matematika & Ilmu Pengetahuan Alam)</p>
@@ -444,12 +485,11 @@
                 ` 
             },
             "A": { 
-                title: "Minat Artistic (Si Kreator)", 
+                title: "Artistic (Si Kreator)", emoji: "🎨",
                 description: `
-                    <h4>🌟 Hasil RIASEC Kamu: Artistic (Si Kreator)</h4>
                     <p>Kamu adalah tipe yang penuh imajinasi, kreatif, dan suka mengekspresikan diri. Kamu nyaman bekerja dengan ide, warna, bentuk, musik, tulisan, desain, dan karya seni. Kamu lebih mudah memahami sesuatu melalui perasaan, intuisi, dan kreativitas, bukan lewat aturan yang kaku.</p>
                     <p><strong>Ciri-ciri Kamu:</strong> imajinatif dan suka berpikir bebas, menyukai seni: menggambar, menulis, musik, desain, atau video. Tidak suka aturan yang terlalu ketat, senang mengekspresikan diri melalui karya, peka terhadap detail visual dan emosi, suka mencoba hal baru dan bereksperimen dengan ide, tidak terlalu suka tugas yang kaku, monoton, atau terlalu teknis.</p>
-                    <h4>🎓 Arah Pendidikan Setelah SMP</h4>
+                    <h5>🎓 Arah Pendidikan Setelah SMP</h5>
                     <p><strong>🎨 SMA – Pilihan yang Sangat Cocok</strong><br>
                     SMA memberi ruang bagi kamu untuk mengembangkan kreativitas melalui pelajaran yang lebih fleksibel dan beragam.</p>
                     <p>Jurusan yang cocok: IPS atau Bahasa</p>
@@ -473,12 +513,11 @@
                 ` 
             },
             "S": { 
-                title: "Minat Social (Si Penolong)", 
+                title: "Social (Si Penolong)", emoji: "🤝",
                 description: `
-                    <h4>🌟 Hasil RIASEC Kamu: Social (Si Penolong)</h4>
                     <p>Kamu adalah tipe yang peduli, hangat, dan suka membantu orang lain. Kamu nyaman bekerja dengan manusia, bukan mesin atau data. Kamu lebih mudah memahami sesuatu saat bisa berinteraksi, berdiskusi, mengajar, atau memberi dukungan. Kamu merasa puas ketika bisa membuat orang lain merasa lebih baik.</p>
                     <p><strong>Ciri-ciri Kamu:</strong> suka membantu teman dan orang sekitar, mudah bergaul dan nyaman berbicara, sabar, ramah, dan empati tinggi. Senang bekerja dalam kelompok, menyukai kegiatan yang berhubungan dengan manusia, baik dalam mendengarkan dan memberi saran, tidak terlalu suka pekerjaan teknis, mesin, atau hal yang terlalu kaku.</p>
-                    <h4>🎓 Arah Pendidikan Setelah SMP</h4>
+                    <h5>🎓 Arah Pendidikan Setelah SMP</h5>
                     <p><strong>🧑‍🏫 SMA – Pilihan Sangat Cocok</strong><br>
                     SMA memberi kamu ruang untuk mengembangkan kemampuan komunikasi, sosial, dan kepemimpinan.</p>
                     <p>Jurusan yang cocok: IPS</p>
@@ -500,12 +539,11 @@
                 ` 
             },
             "E": { 
-                title: "Minat Enterprising (Si Pemimpin)", 
+                title: "Enterprising (Si Pemimpin)", emoji: "📈",
                 description: `
-                    <h4>🌟 Hasil RIASEC Kamu: Enterprising (Si Pemimpin)</h4>
                     <p>Kamu adalah tipe yang percaya diri, berani, dan suka mengambil peran memimpin. Kamu nyaman bekerja dengan orang, keputusan, rencana besar, dan tantangan baru. Kamu lebih mudah memahami sesuatu ketika bisa mengajak orang lain, bernegosiasi, berbicara, atau menjalankan sebuah proyek. Kamu senang saat bisa memengaruhi, mengatur, mengarahkan, atau membuat keputusan. Kamu cocok dalam situasi yang aktif, bergerak cepat, dan membutuhkan inisiatif.</p>
                     <p><strong>Ciri-ciri Kamu:</strong> percaya diri dan mudah berbicara di depan orang. Suka memimpin, mengatur, dan mengajak orang lain. Berani mencoba hal baru dan mengambil risiko. Senang merencanakan atau mengorganisir acara. Pandai memotivasi dan mempengaruhi teman. Tertarik pada dunia bisnis, marketing, organisasi, atau kepemimpinan. Tidak terlalu suka aktivitas yang terlalu teknis atau terlalu banyak teori mendalam.</p>
-                    <h4>🎓 Arah Pendidikan Setelah SMP</h4>
+                    <h5>🎓 Arah Pendidikan Setelah SMP</h5>
                     <p><strong>🧑‍💼 SMA – Pilihan Sangat Cocok</strong><br>
                     SMA memberi ruang bagi kamu yang suka berorganisasi, memimpin, dan memperdalam ilmu sosial.</p>
                     <p>Jurusan yang cocok: IPS</p>
@@ -529,12 +567,11 @@
                 ` 
             },
             "C": { 
-                title: "Minat Conventional (Si Pengatur)", 
+                title: "Conventional (Si Teratur)", emoji: "📊",
                 description: `
-                    <h4>🌟 Hasil RIASEC Kamu: Conventional (Si Teratur)</h4>
                     <p>Kamu adalah tipe yang rapi, teliti, dan suka bekerja dengan data, angka, catatan, dan aturan yang jelas. Kamu nyaman ketika segala sesuatu terorganisir, terstruktur, dan ada langkah-langkah yang bisa diikuti. Kamu lebih mudah memahami sesuatu ketika ada aturan, tabel, pola, atau instruksi yang sistematis. Kamu senang saat bisa menyusun, mengatur, mengarsipkan, menghitung, atau memastikan sesuatu berjalan sesuai prosedur.</p>
                     <p><strong>Ciri-ciri Kamu:</strong> teliti dan rapi dalam mengerjakan tugas. Suka tabel, data, angka, atau pekerjaan dengan detail, menyukai aturan yang jelas dan langkah-langkah teratur. Senang mengatur jadwal, catatan, atau dokumen. Bertanggung jawab dan disiplin. Tidak terlalu suka sesuatu yang terlalu bebas, acak, atau tidak terstruktur. Suka tugas yang pasti dan jelas apa yang harus dilakukan.</p>
-                    <h4>🎓 Arah Pendidikan Setelah SMP</h4>
+                    <h5>🎓 Arah Pendidikan Setelah SMP</h5>
                     <p><strong>📊 SMK – Pilihan Sangat Cocok</strong><br>
                     SMK menawarkan banyak jurusan yang menggunakan data, administrasi, keuangan, dan ketelitian—hal yang sesuai dengan tipe Conventional.</p>
                     <p>Jurusan SMK yang cocok:</p>
@@ -550,15 +587,14 @@
                     <p><strong>📘 SMA – Jika Ingin Dasar Teori yang Luas</strong><br>
                     Jika kamu ingin memperkuat dasar akademik, kamu bisa memilih: IPS</p>
                     <p>Karena kamu akan bertemu: ekonomi, akuntansi, administrasi, manajemen dasar, yang cocok dengan kemampuanmu mengolah data dan informasi.</p>
-                    <p><strong>🕌 MA – Jika Kamu Ingin Lingkungan Terstruktur + Religius</strong><br>
+                    <p><strong>🕌 MA – Jika Ingin Lingkungan Terstruktur + Religius</strong><br>
                     Di MA, kamu bisa mengambil IPS untuk tetap mendukung minatmu pada administrasi, peraturan, dan keteraturan.</p>
                     <p>Sebagai tipe Conventional, kamu berkembang di lingkungan yang rapi, terstruktur, penuh data, angka, aturan, dan keteraturan. SMK jurusan administrasi & keuangan adalah pilihan paling cocok, sementara SMA/MA IPS bisa menjadi pilihan jika kamu ingin jalur akademik menuju administrasi, manajemen, atau akuntansi di masa depan.</p>
                 ` 
             }
         };
 
-        // --- 3. DAFTAR HASIL TAHAP 2 (PERMINTAAN #3 di JS) ---
-        // EMOJI DITAMBAHKAN DI SINI
+        // --- 3. DAFTAR HASIL TAHAP 2 (SEKOLAH) ---
         const schoolResults = {
             "smk": { title: "Rekomendasi: SMK (Sekolah Menengah Kejuruan)", emoji: "🛠️", description: "Pilihanmu menunjukkan kamu lebih suka pembelajaran yang praktis dan ingin cepat memiliki keahlian khusus untuk dunia kerja. SMK adalah pilihan tepat untuk mengasah keterampilan teknis secara mendalam." },
             "sma": { title: "Rekomendasi: SMA (Sekolah Menengah Atas)", emoji: "📚", description: "Pilihanmu menunjukkan kamu menikmati pembelajaran teori, analisis, dan ingin melanjutkan ke jenjang universitas. SMA akan memberimu fondasi akademik yang kuat di bidang IPA, IPS, atau Bahasa." },
@@ -595,6 +631,7 @@
         });
 
         // --- 6. LOGIKA SUBMIT TAHAP 1 (RIASEC) ---
+        // (PERUBAHAN LOGIKA UNTUK MENAMPILKAN VISUAL BARU)
         const riasecResultContainer = document.getElementById('riasec-result-container');
         const schoolForm = document.getElementById('school-form');
 
@@ -623,23 +660,33 @@
             finalRIASECType = highestTypes.join(", "); 
 
             let combinedTitle = "";
-            let combinedDescription = "";
+            let combinedDescriptionHTML = ""; // Variabel baru untuk menampung blok HTML
 
             if (highestTypes[0] === "(Tidak ada minat dominan)") {
                 combinedTitle = "Belum Ada Minat Dominan";
-                combinedDescription = "<p>Kamu belum menunjukkan minat yang kuat pada salah satu tipe. Tidak apa-apa! Ini wajar di usiamu. Coba eksplorasi lebih banyak kegiatan untuk menemukan apa yang kamu sukai.</p>";
+                combinedDescriptionHTML = "<p>Kamu belum menunjukkan minat yang kuat pada salah satu tipe. Tidak apa-apa! Ini wajar di usiamu. Coba eksplorasi lebih banyak kegiatan untuk menemukan apa yang kamu sukai.</p>";
             } else {
                 combinedTitle = highestTypes
                     .map(type => careerResults[type].title) 
                     .join(" & "); 
 
-                combinedDescription = highestTypes
-                    .map(type => careerResults[type].description) 
-                    .join("<hr style='border-top: 1px dashed #0096FF; margin: 25px 0;'>");
+                // Buat blok visual untuk setiap tipe
+                highestTypes.forEach(type => {
+                    const result = careerResults[type];
+                    combinedDescriptionHTML += `
+                        <div class="riasec-result-item">
+                            <h4>
+                                <span class="riasec-emoji-icon">${result.emoji}</span>
+                                ${result.title}
+                            </h4>
+                            ${result.description}
+                        </div>
+                    `;
+                });
             }
 
-            document.getElementById('riasec-title').innerHTML = combinedTitle;
-            document.getElementById('riasec-description').innerHTML = combinedDescription;
+            document.getElementById('riasec-overall-title').innerHTML = combinedTitle;
+            document.getElementById('riasec-description').innerHTML = combinedDescriptionHTML;
             document.getElementById('riasec-scores').innerText = `Realistic: ${scores.R} | Investigative: ${scores.I} | Artistic: ${scores.A} | Social: ${scores.S} | Enterprising: ${scores.E} | Conventional: ${scores.C}`;
             
             riasecForm.style.display = 'none';
@@ -681,6 +728,7 @@
         const schoolResultContainer = document.getElementById('school-result-container');
         const submitSchoolBtn = document.getElementById('submit-school');
         const saveStatus = document.getElementById('save-status');
+        let finalSchoolResultGlobal = ""; 
 
         schoolForm.addEventListener('submit', function(event) {
             event.preventDefault();
@@ -691,25 +739,28 @@
             if (q31Value === 'smk') finalOutcome = 'smk';
             else if (q31Value === 'ma') finalOutcome = 'ma';
             else if (q31Value === 'teori') {
-                const q32Value = document.querySelector('input[name="q32"]:checked').value;
-                if (q32Value === 'smk') finalOutcome = 'smk';
-                else if (q32Value === 'ma') finalOutcome = 'ma';
-                else if (q32Value === 'kuliah') {
-                    const q33Value = document.querySelector('input[name="q33"]:checked').value;
-                    if (q33Value === 'sma') finalOutcome = 'sma';
-                    else if (q33Value === 'ma') finalOutcome = 'ma';
+                const q32Radio = document.querySelector('input[name="q32"]:checked');
+                if (q32Radio) {
+                    const q32Value = q32Radio.value;
+                    if (q32Value === 'smk') finalOutcome = 'smk';
+                    else if (q32Value === 'ma') finalOutcome = 'ma';
+                    else if (q32Value === 'kuliah') {
+                        const q33Radio = document.querySelector('input[name="q33"]:checked');
+                        if (q33Radio) {
+                            const q33Value = q33Radio.value;
+                            if (q33Value === 'sma') finalOutcome = 'sma';
+                            else if (q33Value === 'ma') finalOutcome = 'ma';
+                        }
+                    }
                 }
             }
 
-            finalSchoolResult = finalOutcome;
+            finalSchoolResultGlobal = finalOutcome; 
 
-            if (finalSchoolResult) {
-                const result = schoolResults[finalSchoolResult];
+            if (finalSchoolResultGlobal) {
+                const result = schoolResults[finalSchoolResultGlobal];
                 
-                // === PERMINTAAN #3 di JS ===
-                // TAMPILKAN EMOJI DI HALAMAN HASIL
                 document.getElementById('school-emoji').innerText = result.emoji; 
-                
                 document.getElementById('school-title').innerText = result.title;
                 document.getElementById('school-description').innerText = result.description;
                 schoolResultContainer.style.display = 'block';
@@ -719,6 +770,8 @@
                 saveStatus.innerText = "Sedang menyimpan hasil...";
                 
                 saveToGoogleSheets();
+            } else {
+                alert("Harap lengkapi semua pilihan di Tahap 2.");
             }
         });
 
@@ -734,7 +787,7 @@
                 skorS: finalRIASECScores.S,
                 skorE: finalRIASECScores.E,
                 skorC: finalRIASECScores.C,
-                rekomendasiSekolah: finalSchoolResult.toUpperCase()
+                rekomendasiSekolah: finalSchoolResultGlobal.toUpperCase() 
             };
 
             try {
