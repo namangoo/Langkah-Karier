@@ -1,549 +1,745 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asesmen Karir RIASEC (v3 - Fix Skor Seri)</title>
-    
-    <style>
-        /* (CSS tidak berubah) */
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f4f7f6; color: #333; margin: 0; padding: 20px; }
-        #quiz-container { max-width: 700px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); padding: 30px; }
-        h1, h2, h3 { color: #1a535c; text-align: center; }
-        /* Penambahan style untuk deskripsi hasil yang lebih kaya */
-        #riasec-description h4 { color: #1a535c; margin-top: 15px; margin-bottom: 5px; }
-        #riasec-description p { margin-bottom: 10px; line-height: 1.6; }
-        #riasec-description ul { margin-top: 5px; margin-bottom: 15px; padding-left: 25px; }
-        #riasec-description li { margin-bottom: 5px; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asesmen Karir RIASEC (Versi Lucu)</title>
+    
+    <style>
+        /* === FONT & TEMA DASAR "LUCU" === */
+        body {
+            /* Font bulat, lebih ramah */
+            font-family: "Arial Rounded MT Bold", "Helvetica Rounded", Arial, sans-serif;
+            background-color: #f7faff; /* Latar biru sangat-sangat muda */
+            color: #444;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
 
-        .question { margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
-        .question p { font-size: 1.1em; font-weight: 600; margin-bottom: 15px; }
-        .options { display: flex; flex-direction: column; gap: 10px; }
-        .basic-input { display: block; width: 95%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; font-size: 1em; }
-        .option { padding: 10px 15px; border-radius: 5px; cursor: pointer; transition: background-color 0.2s; border: 1px solid #ccc; text-align: left; }
-        .option:hover { background-color: #f0f0f0; }
-        .option input[type="radio"] { margin-right: 8px; }
-        .submit-btn { display: block; width: 100%; padding: 15px; background-color: #1a535c; color: white; border: none; border-radius: 5px; font-size: 1.2em; font-weight: bold; cursor: pointer; transition: background-color 0.2s; margin-top: 20px; }
-        .submit-btn:hover { background-color: #4ecdc4; }
-        .submit-btn:disabled { background-color: #999; cursor: not-allowed; }
-        .result-box { margin-top: 30px; background-color: #e6fffa; border: 1px solid #4ecdc4; padding: 20px; border-radius: 8px; }
-        #riasec-result-container { text-align: center; }
-        .dynamic-question-wrapper { margin-top: 20px; padding-left: 20px; border-left: 3px solid #eee; }
-        #riasec-form, #school-form, #riasec-result-container, #school-result-container { display: none; }
-    </style>
-</head>
+        #quiz-container {
+            max-width: 700px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 24px; /* Sudut sangat bulat */
+            box-shadow: 0 10px 40px rgba(13, 71, 161, 0.08); /* Bayangan lebih soft */
+            padding: 30px 40px;
+            border: 1px solid #fff;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* === VISUAL HALAMAN DEPAN (SESUAI PERMINTAAN) === */
+        .welcome-visual {
+            font-size: 4.5em; /* Emoji besar */
+            text-align: center;
+            margin-bottom: -10px;
+            /* Animasi melambai "lucu" */
+            animation: wave 2.5s infinite;
+            transform-origin: 70% 70%;
+            display: block;
+        }
+
+        @keyframes wave {
+            0% { transform: rotate(0.0deg) }
+            10% { transform: rotate(14.0deg) }
+            20% { transform: rotate(-8.0deg) }
+            30% { transform: rotate(14.0deg) }
+            40% { transform: rotate(-4.0deg) }
+            50% { transform: rotate(10.0deg) }
+            60% { transform: rotate(0.0deg) }
+            100% { transform: rotate(0.0deg) }
+        }
+
+
+        /* === TIPOGRAFI & JUDUL === */
+        h1, h2, h3 {
+            color: #0D47A1; /* Biru tua yang solid */
+            text-align: center;
+            font-weight: 700;
+        }
+        h1 { font-size: 1.8em; margin-bottom: 10px; }
+        h2 { font-size: 1.5em; margin-top: 30px; }
+        h3 { font-size: 1.3em; color: #0096FF; /* Biru cerah untuk sub-judul hasil */ }
+
+        /* === PERTANYAAN & INPUT AWAL === */
+        .question {
+            margin-bottom: 25px;
+            border-bottom: 1px solid #f0f4f8; /* Garis pemisah super halus */
+            padding-bottom: 20px;
+        }
+
+        .question p {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .basic-input {
+            display: block;
+            width: 95%;
+            padding: 14px 18px;
+            margin-top: 5px;
+            border: 2px solid #e0e8f0;
+            border-radius: 12px; /* Input bulat */
+            font-size: 1em;
+            font-family: "Arial Rounded MT Bold", "Helvetica Rounded", Arial, sans-serif;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .basic-input:focus {
+            border-color: #0096FF;
+            box-shadow: 0 0 10px rgba(0, 150, 255, 0.15); /* Bayangan biru halus */
+            outline: none;
+        }
+
+        /* === PILIHAN JAWABAN === */
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            display: block;
+            background-color: #f8fbff;
+            padding: 14px 18px;
+            border-radius: 12px; /* Pilihan bulat */
+            cursor: pointer;
+            border: 2px solid #e8f0f8;
+            text-align: left;
+            font-weight: 500;
+            transition: transform 0.15s ease-out, box-shadow 0.15s ease-out, border-color 0.15s ease-out;
+        }
+
+        .option:hover {
+            transform: scale(1.02); /* Sedikit membesar saat disentuh */
+            box-shadow: 0 6px 15px rgba(0, 150, 255, 0.08);
+            border-color: #0096FF;
+            background-color: #fff;
+        }
+
+        .option input[type="radio"] {
+            margin-right: 12px;
+            accent-color: #0096FF; /* Tombol radio jadi biru */
+            transform: scale(1.1);
+        }
+
+        /* === TOMBOL SUBMIT "LUCU" === */
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 16px 24px;
+            background-color: #0096FF; /* Biru cerah yang "pop" */
+            color: white;
+            border: none;
+            border-radius: 50px; /* Tombol bentuk kapsul */
+            font-size: 1.15em;
+            font-weight: bold;
+            font-family: "Arial Rounded MT Bold", "Helvetica Rounded", Arial, sans-serif;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0, 150, 255, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px) scale(1.02); /* Efek melayang */
+            box-shadow: 0 6px 20px rgba(0, 150, 255, 0.4);
+        }
+
+        .submit-btn:disabled {
+            background-color: #aaa;
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* === KOTAK HASIL (RESULT BOX) === */
+        .result-box {
+            margin-top: 30px;
+            background-color: #eaf6ff; /* Latar biru muda */
+            border: 1px solid #d0eaff;
+            padding: 25px 30px;
+            border-radius: 16px; /* Bulat */
+            border-left: 8px solid #0096FF; /* Aksen biru tebal di kiri */
+        }
+
+        #riasec-result-container {
+            text-align: center;
+        }
+
+        /* === VISUAL DI KALIMAT HASIL (SESUAI PERMINTAAN) === */
+        #riasec-description h4 {
+            color: #0D47A1;
+            background-color: #fff; /* Latar putih */
+            padding: 12px 15px;
+            border-radius: 12px;
+            border: 1px solid #d0eaff;
+            border-left: 6px solid #FFC107; /* Aksen kuning cerah! */
+            margin-top: 20px;
+            margin-bottom: 15px;
+        }
+
+        #riasec-description p {
+            margin-bottom: 10px;
+        }
+        
+        /* Ini membuat emoji + sub-judul (spt 🔧 SMK) lebih menonjol */
+        #riasec-description p > strong {
+            color: #0D47A1; 
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 5px;
+        }
+
+        #riasec-description ul {
+            margin-top: 5px;
+            margin-bottom: 15px;
+            padding-left: 30px;
+            list-style-type: '👉'; /* Ganti bullet point jadi emoji */
+        }
+        #riasec-description li {
+            margin-bottom: 5px;
+            padding-left: 8px;
+        }
+
+        #riasec-scores {
+            font-weight: bold;
+            color: #005cb9;
+            background-color: #fff;
+            padding: 12px;
+            border-radius: 10px;
+            border: 2px dashed #0096FF;
+        }
+
+        /* === VISIBILITAS FORM === */
+        .dynamic-question-wrapper {
+            margin-top: 20px;
+            padding-left: 20px;
+            border-left: 3px solid #eef2f6;
+        }
+
+        #riasec-form, #school-form, #riasec-result-container, #school-result-container {
+            display: none;
+        }
+    </style>
+    </head>
 <body>
 
-    <div id="quiz-container">
-        
-        <form id="user-form">
-            <h1>Selamat Datang!</h1>
-            <p style="text-align: center;">Silakan isi nama dan kelas Anda untuk memulai asesmen.</p>
-            <div class="question">
-                <p>Nama Lengkap</p>
-                <input type="text" id="user-name" class="basic-input" placeholder="Masukkan nama Anda..." required>
-            </div>
-            <div class="question">
-                <p>Kelas</p>
-                <input type="text" id="user-class" class="basic-input" placeholder="Contoh: 9A" required>
-            </div>
-            <button type="submit" class="submit-btn" id="start-btn">Mulai Asesmen</button>
-        </form>
+    <div id="quiz-container">
+        
+        <form id="user-form">
+            <div class="welcome-visual">👋</div>
+            
+            <h1>Selamat Datang!</h1>
+            <p style="text-align: center;">Silakan isi nama dan kelas Anda untuk memulai asesmen.</p>
+            <div class="question">
+                <p>Nama Lengkap</p>
+                <input type="text" id="user-name" class="basic-input" placeholder="Masukkan nama Anda..." required>
+            </div>
+            <div class="question">
+                <p>Kelas</p>
+                <input type="text" id="user-class" class="basic-input" placeholder="Contoh: 9A" required>
+            </div>
+            <button type="submit" class="submit-btn" id="start-btn">Mulai Asesmen</button>
+        </form>
 
-        <form id="riasec-form">
-            <h1>Tahap 1: Asesmen Minat Karir</h1>
-            <p style="text-align: center;">Jawab "Iya" atau "Tidak" untuk setiap pernyataan di bawah ini.</p>
-            <div id="questions-wrapper-riasec"></div>
-            <button type="submit" class="submit-btn" id="submit-riasec">Selesai Tahap 1: Lihat Tipe Minat Saya</button>
-        </form>
+        <form id="riasec-form">
+            <h1>Tahap 1: Asesmen Minat Karir</h1>
+            <p style="text-align: center;">Jawab "Iya" atau "Tidak" untuk setiap pernyataan di bawah ini.</p>
+            <div id="questions-wrapper-riasec"></div>
+            <button type="submit" class="submit-btn" id="submit-riasec">Selesai Tahap 1: Lihat Tipe Minat Saya</button>
+        </form>
 
-        <div id="riasec-result-container" class="result-box">
-            <h2>Tipe Minat Terkuat Anda:</h2>
-            <h3 id="riasec-title"></h3>
-                        <div id="riasec-description" style="text-align: left;"></div>
-            <hr>
-            <p><strong>Rincian Skor Anda:</strong></p>
-            <p id="riasec-scores"></p>
-        </div>
+        <div id="riasec-result-container" class="result-box">
+            <h2>Tipe Minat Terkuat Anda:</h2>
+            <h3 id="riasec-title"></h3>
+            <div id="riasec-description" style="text-align: left;"></div>
+            <hr style="border: 0; border-top: 1px solid #b3d7ff; margin: 20px 0;">
+            <p><strong>Rincian Skor Anda:</strong></p>
+            <p id="riasec-scores"></p>
+        </div>
 
-        <form id="school-form">
-            <h2 style="margin-top: 40px;">Tahap 2: Rekomendasi Sekolah</h2>
-            <div class="question">
-                <p>31. Kamu lebih suka jenis pembelajaran seperti apa?</p>
-                <div class="options">
-                    <label class="option"><input type="radio" name="q31" value="smk" required> Lebih banyak praktik langsung</label>
-                    <label class="option"><input type="radio" name="q31" value="teori" required> Lebih banyak teori dan analisis</label>
-                    <label class="option"><input type="radio" name="q31" value="ma" required> Teori + praktik + pendalaman agama</label>
-                </div>
-            </div>
-            <div id="q32-wrapper" class="dynamic-question-wrapper" style="display: none;">
-                <div class="question">
-                    <p>32. Setelah lulus sekolah nanti, kamu ingin...</p>
-                    <div class="options">
-                        <label class="option"><input type="radio" name="q32" value="smk"> Cepat bekerja dan punya skill</label>
-                        <label class="option"><input type="radio" name="q32" value="kuliah"> Kuliah di universitas</label>
-                        <label class="option"><input type="radio" name="q32" value="ma"> Mendalami ilmu agama lebih dalam</label>
-                    </div>
-                </div>
-            </div>
-            <div id="q33-wrapper" class="dynamic-question-wrapper" style="display: none;">
-                <div class="question">
-                    <p>33. Lingkungan belajar seperti apa yang kamu inginkan?</p>
-                    <div class="options">
-                        <label class="option"><input type="radio" name="q33" value="sma"> Lingkungan akademik umum (IPA/IPS/Bahasa)</label>
-                        <label class="option"><input type="radio" name="q33" value="ma"> Lingkungan religius dan Islami</label>
-                    </div>
-                </div>
-            </div>
-            <button type="submit" class="submit-btn" id="submit-school">Simpan & Lihat Rekomendasi Akhir</button>
-        </form>
+        <form id="school-form">
+            <h2 style="margin-top: 40px;">Tahap 2: Rekomendasi Sekolah</h2>
+            <div class="question">
+                <p>31. Kamu lebih suka jenis pembelajaran seperti apa?</p>
+                <div class="options">
+                    <label class="option"><input type="radio" name="q31" value="smk" required> Lebih banyak praktik langsung</label>
+                    <label class="option"><input type="radio" name="q31" value="teori" required> Lebih banyak teori dan analisis</label>
+                    <label class="option"><input type="radio" name="q31" value="ma" required> Teori + praktik + pendalaman agama</label>
+                </div>
+            </div>
+            <div id="q32-wrapper" class="dynamic-question-wrapper" style="display: none;">
+                <div class="question">
+                    <p>32. Setelah lulus sekolah nanti, kamu ingin...</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q32" value="smk"> Cepat bekerja dan punya skill</label>
+                        <label class="option"><input type="radio" name="q32" value="kuliah"> Kuliah di universitas</label>
+                        <label class="option"><input type="radio" name="q32" value="ma"> Mendalami ilmu agama lebih dalam</label>
+                    </div>
+                </div>
+            </div>
+            <div id="q33-wrapper" class="dynamic-question-wrapper" style="display: none;">
+                <div class="question">
+                    <p>33. Lingkungan belajar seperti apa yang kamu inginkan?</p>
+                    <div class="options">
+                        <label class="option"><input type="radio" name="q33" value="sma"> Lingkungan akademik umum (IPA/IPS/Bahasa)</label>
+                        <label class="option"><input type="radio" name="q33" value="ma"> Lingkungan religius dan Islami</label>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="submit-btn" id="submit-school">Simpan & Lihat Rekomendasi Akhir</button>
+        </form>
 
-        <div id="school-result-container" class="result-box">
-            <h2>Hasil Akhir Rekomendasi Sekolah:</h2>
-            <h3 id="school-title"></h3>
-            <p id="school-description"></p>
-            <p id="save-status" style="font-weight: bold; text-align: center;"></p>
-        </div>
-    </div>
+        <div id="school-result-container" class="result-box">
+            <h2>Hasil Akhir Rekomendasi Sekolah:</h2>
+            <h3 id="school-title"></h3>
+            <p id="school-description"></p>
+            <p id="save-status" style="font-weight: bold; text-align: center;"></p>
+        </div>
+    </div>
+    <script>
+        
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // !!! TEMPELKAN URL WEB APP ANDA DARI GOOGLE APPS SCRIPT DI SINI !!!
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        const appsScriptURL = "https://script.google.com/macros/s/AKfycbzF6oP9qdUhUhdBCno7ETQGuj2Ftycf4EGvRRtddnPltWbiFh4oQ02tSZLAtHDlURycdg/exec";
+        
+        // --- VARIABEL GLOBAL UNTUK MENYIMPAN HASIL ---
+        let finalRIASECScores = {};
+        let finalRIASECType = ""; // Sekarang bisa berisi "R, A"
+        let finalSchoolResult = "";
+        let userData = {
+            nama: "",
+            kelas: ""
+        };
 
-    <script>
-        
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        // !!! TEMPELKAN URL WEB APP ANDA DARI GOOGLE APPS SCRIPT DI SINI !!!
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        const appsScriptURL = "https://script.google.com/macros/s/AKfycbzF6oP9qdUhUhdBCno7ETQGuj2Ftycf4EGvRRtddnPltWbiFh4oQ02tSZLAtHDlURycdg/exec";
-        
-        // --- VARIABEL GLOBAL UNTUK MENYIMPAN HASIL ---
-        let finalRIASECScores = {};
-        let finalRIASECType = ""; // Sekarang bisa berisi "R, A"
-        let finalSchoolResult = "";
-        let userData = {
-            nama: "",
-            kelas: ""
-        };
+        // --- 1. DAFTAR PERTANYAAN TAHAP 1 (RIASEC) ---
+        const questionsRIASEC = [
+            { question: "Apakah kamu suka memperbaiki barang-barang yang rusak (sepeda, alat listrik, mainan)?", name: "q1", type: "R" },
+            { question: "Apakah kamu lebih suka kegiatan praktik dibanding teori di kelas?", name: "q2", type: "R" },
+            { question: "Apakah kamu senang menggunakan alat kerja seperti obeng, tang, atau peralatan bengkel?", name: "q3", type: "R" },
+            { question: "Apakah kamu tertarik mempelajari cara kerja mesin atau elektronik?", name: "q4", type: "R" },
+            { question: "Apakah kamu merasa nyaman bekerja di luar ruangan atau bergerak aktif?", name: "q5", type: "R" },
+            { question: "Apakah kamu suka memecahkan soal yang sulit atau teka-teki logika?", name: "q6", type: "I" },
+            { question: "Apakah kamu sering penasaran terhadap sesuatu dan mencari tahu alasannya?", name: "q7", type: "I" },
+            { question: "Apakah kamu menikmati percobaan sains atau penelitian kecil?", name: "q8", type: "I" },
+            { question: "Apakah kamu lebih suka belajar hal yang menantang pikiran?", name: "q9", type: "I" },
+            { question: "Apakah kamu sering membaca atau menonton hal yang membuat kamu ingin menyelidikinya lebih jauh?", name: "q10", type: "I" },
+            { question: "Apakah kamu suka menggambar, mendesain, atau membuat karya seni?", name: "q11", type: "A" },
+            { question: "Apakah kamu senang mengekspresikan diri melalui musik, tulisan, atau seni?", name: "q12", type: "A" },
+            { question: "Apakah kamu lebih nyaman bekerja tanpa aturan yang kaku?", name: "q13", type: "A" },
+            { question: "Apakah kamu suka membuat sesuatu yang unik atau berbeda?", name: "q14", type: "A" },
+            { question: "Apakah kamu tertarik pada dunia kreatif seperti film, musik, animasi, atau desain?", name: "q15", type: "A" },
+            { question: "Apakah kamu suka membantu teman yang kesulitan memahami pelajaran?", name: "q16", type: "S" },
+            { question: "Apakah kamu lebih menikmati kerja kelompok dibanding kerja sendiri?", name: "q17", type: "S" },
+            { question: "Apakah kamu merasa senang ketika bisa membuat orang lain merasa lebih baik?", name: "q18", type: "S" },
+            { question: "Apakah kamu tertarik mengajar, memandu, atau mendampingi orang lain?", name: "q19", type: "S" },
+            { question: "Apakah kamu senang berada di kegiatan yang melibatkan banyak orang?", name: "q20", type: "S" },
+            { question: "Apakah kamu suka menjadi pemimpin dalam kelompok?", name: "q21", type: "E" },
+            { question: "Apakah kamu percaya diri berbicara di depan orang banyak?", name: "q22", type: "E" },
+            { question: "Apakah kamu tertarik memulai proyek atau usaha kecil-kecilan?", name: "q23", type: "E" },
+            { question: "Apakah kamu suka mengajak orang lain untuk bekerja sama dalam suatu rencana?", name: "q24", type: "E" },
+            { question: "Apakah kamu menikmati membuat aturan, mengambil keputusan, atau mengarahkan orang lain?", name: "q25", type: "E" },
+            { question: "Apakah kamu suka tugas yang perlu ketelitian seperti mencatat dan mengurutkan data?", name: "q26", type: "C" },
+            { question: "Apakah kamu nyaman mengikuti prosedur dan aturan yang jelas?", name: "q27", type: "C" },
+            { question: "Apakah kamu tertarik pada pekerjaan administrasi seperti mengarsipkan dokumen?", name: "q28", type: "C" },
+            { question: "Apakah kamu merasa lebih mudah bekerja dengan langkah-langkah yang pasti?", name: "q29", type: "C" },
+            { question: "Apakah kamu suka membuat jadwal dan merapikan aktivitas?", name: "q30", type: "C" }
+        ];
 
-        // --- 1. DAFTAR PERTANYAAN TAHAP 1 (RIASEC) ---
-        const questionsRIASEC = [
-            // (Daftar pertanyaan tidak berubah)
-            { question: "Apakah kamu suka memperbaiki barang-barang yang rusak (sepeda, alat listrik, mainan)?", name: "q1", type: "R" },
-            { question: "Apakah kamu lebih suka kegiatan praktik dibanding teori di kelas?", name: "q2", type: "R" },
-            { question: "Apakah kamu senang menggunakan alat kerja seperti obeng, tang, atau peralatan bengkel?", name: "q3", type: "R" },
-            { question: "Apakah kamu tertarik mempelajari cara kerja mesin atau elektronik?", name: "q4", type: "R" },
-            { question: "Apakah kamu merasa nyaman bekerja di luar ruangan atau bergerak aktif?", name: "q5", type: "R" },
-            { question: "Apakah kamu suka memecahkan soal yang sulit atau teka-teki logika?", name: "q6", type: "I" },
-            { question: "Apakah kamu sering penasaran terhadap sesuatu dan mencari tahu alasannya?", name: "q7", type: "I" },
-            { question: "Apakah kamu menikmati percobaan sains atau penelitian kecil?", name: "q8", type: "I" },
-            { question: "Apakah kamu lebih suka belajar hal yang menantang pikiran?", name: "q9", type: "I" },
-            { question: "Apakah kamu sering membaca atau menonton hal yang membuat kamu ingin menyelidikinya lebih jauh?", name: "q10", type: "I" },
-            { question: "Apakah kamu suka menggambar, mendesain, atau membuat karya seni?", name: "q11", type: "A" },
-        _     { question: "Apakah kamu senang mengekspresikan diri melalui musik, tulisan, atau seni?", name: "q12", type: "A" },
-            { question: "Apakah kamu lebih nyaman bekerja tanpa aturan yang kaku?", name: "q13", type: "A" },
-            { question: "Apakah kamu suka membuat sesuatu yang unik atau berbeda?", name: "q14", type: "A" },
-            { question: "Apakah kamu tertarik pada dunia kreatif seperti film, musik, animasi, atau desain?", name: "q15", type: "A" },
-            { question: "Apakah kamu suka membantu teman yang kesulitan memahami pelajaran?", name: "q16", type: "S" },
-            { question: "Apakah kamu lebih menikmati kerja kelompok dibanding kerja sendiri?", name: "q17", type: "S" },
-            { question: "Apakah kamu merasa senang ketika bisa membuat orang lain merasa lebih baik?", name: "q18", type: "S" },
-            { question: "Apakah kamu tertarik mengajar, memandu, atau mendampingi orang lain?", name: "q19", type: "S" },
-            { question: "Apakah kamu senang berada di kegiatan yang melibatkan banyak orang?", name: "q20", type: "S" },
-            { question: "Apakah kamu suka menjadi pemimpin dalam kelompok?", name: "q21", type: "E" },
-            { question: "Apakah kamu percaya diri berbicara di depan orang banyak?", name: "q22", type: "E" },
-    _     { question: "Apakah kamu tertarik memulai proyek atau usaha kecil-kecilan?", name: "q23", type: "E" },
-            { question: "Apakah kamu suka mengajak orang lain untuk bekerja sama dalam suatu rencana?", name: "q24", type: "E" },
-            { question: "Apakah kamu menikmati membuat aturan, mengambil keputusan, atau mengarahkan orang lain?", name: "q25", type: "E" },
-            { question: "Apakah kamu suka tugas yang perlu ketelitian seperti mencatat dan mengurutkan data?", name: "q26", type: "C" },
-            { question: "Apakah kamu nyaman mengikuti prosedur dan aturan yang jelas?", name: "q27", type: "C" },
-            { question: "Apakah kamu tertarik pada pekerjaan administrasi seperti mengarsipkan dokumen?", name: "q28", type: "C" },
-            { question: "Apakah kamu merasa lebih mudah bekerja dengan langkah-langkah yang pasti?", name: "q29", type: "C" },
-            { question: "Apakah kamu suka membuat jadwal dan merapikan aktivitas?", name: "q30", type: "C" }
-        ];
+        // --- 2. DAFTAR HASIL TAHAP 1 (RIASEC) ---
+        // (Deskripsi detail Anda sudah ada di sini, ini akan bekerja dengan CSS baru)
+        const careerResults = {
+            "R": { 
+                title: "Minat Realistic (Si Pekerja)", 
+                description: `
+                    <h4>🌟 Hasil RIASEC Kamu: Realistic (Si Pekerja)</h4>
+                    <p>Kamu adalah tipe yang suka praktik langsung dan nyaman bekerja dengan alat, mesin, teknologi, atau aktivitas lapangan. Kamu lebih mudah paham saat mencoba sendiri daripada hanya membaca teori. Kamu senang kalau bisa melihat hasil nyata dari usaha kamu.</p>
+                    <p><strong>Ciri-ciri kamu:</strong> praktis dan suka hal nyata, tertarik pada alat, mesin, teknologi, suka langkah-langkah jelas, belajar cepat lewat praktik, teliti dan fokus, tidak terlalu suka teori atau banyak bicara.</p>
+                    <h4>🎓 Arah Pendidikan Setelah SMP</h4>
+                    <p><strong>🔧 SMK – Pilihan Paling Cocok</strong><br>
+                    Karena kamu tipe Realistic, lingkungan penuh praktik sangat sesuai untukmu.</p>
+                    <p>Jurusan yang cocok:</p>
+                    <ul>
+                        <li>Teknik Mesin</li>
+                        <li>Teknik Kendaraan Ringan</li>
+                        <li>Teknik Elektro</li>
+                        <li>TKJ (Teknik Komputer & Jaringan)</li>
+                        <li>Desain & Bangunan</li>
+                        <li>Agribisnis / Agroteknologi</li>
+                        <li>Perkapalan / Nautika</li>
+                        <li>Teknik Pengelasan</li>
+                    </ul>
+                    <p><strong>🔬 SMA – Jika Ingin Dasar Akademik</strong><br>
+                    Cocok jika kamu ingin lanjut kuliah di teknik atau sains.<br>
+                    Jurusan: MIPA</p>
+                    <p><strong>🕌 MA – Jika Ingin Suasana Religius + Sains</strong><br>
+                    Pilih IPA agar tetap sejalan dengan minat teknis kamu.</p>
+                ` 
+            },
+            "I": { 
+                title: "Minat Investigative (Si Pemikir)", 
+                description: `
+                    <h4>🌟 Hasil RIASEC Kamu: Investigative (Si Peneliti / Si Pemikir)</h4>
+                    <p>Kamu adalah tipe yang suka mencari tahu, menganalisis, dan memecahkan masalah dengan berpikir mendalam. Kamu nyaman bekerja dengan ide, data, informasi, rumus, eksperimen, dan hal-hal yang membutuhkan logika. Kamu lebih mudah paham saat menyelidiki, membaca, atau mengamati pola daripada melakukan aktivitas fisik.</p>
+                    <p><strong>Ciri-ciri Kamu:</strong> suka berpikir, meneliti, dan menganalisis, penasaran dan suka bertanya “mengapa?”, menyukai pelajaran sains, matematika, teknologi, senang mengamati pola, eksperimen, dan mencari solusi, lebih suka bekerja sendiri daripada banyak bicara, teliti, fokus, dan suka tantangan logis, tidak terlalu suka pekerjaan fisik atau yang terlalu sosial.</p>
+                    <h4>🎓 Arah Pendidikan Setelah SMP</h4>
+                    <p><strong>🔬 SMA – Pilihan Paling Cocok</strong><br>
+                    SMA memberi kamu ruang untuk memperkuat logika, teori, dan sains, yang sangat sesuai untuk tipe Investigative menurut teori Holland.</p>
+                    <p>Jurusan yang cocok: MIPA (Matematika & Ilmu Pengetahuan Alam)</p>
+                    <p>Di MIPA, kamu bertemu: Matematika, Fisika, Kimia, Biologi, Eksperimen dan penelitian. Ini adalah lingkungan yang sesuai dengan cara kamu berpikir dan belajar.</p>
+                    <p><strong>🕌 MA – Jika Kamu Ingin Suasana Religius + Sains</strong><br>
+                    Jika kamu ingin sekolah dengan nuansa religius, kamu tetap bisa memilih jalur IPA agar minat Investigative-mu tetap berkembang.</p>
+                    <p><strong>🧪 SMK – Bisa Jadi Pilihan Jika Jurusannya Sains/Analisis</strong><br>
+                    SMK bukan pilihan utama untuk tipe Investigative, tapi beberapa jurusan masih sesuai, terutama yang berbasis analisis dan pengamatan.</p>
+                    <p>Jurusan SMK yang cocok:</p>
+                    <ul>
+                        <li>Analis Kimia</li>
+                        <li>Farmasi</li>
+                        <li>Teknologi Laboratorium</li>
+                        <li>Geologi / Geomatika</li>
+                        <li>Multimedia (jika suka analisis data digital)</li>
+                    </ul>
+                ` 
+            },
+            "A": { 
+                title: "Minat Artistic (Si Kreator)", 
+                description: `
+                    <h4>🌟 Hasil RIASEC Kamu: Artistic (Si Kreator)</h4>
+                    <p>Kamu adalah tipe yang penuh imajinasi, kreatif, dan suka mengekspresikan diri. Kamu nyaman bekerja dengan ide, warna, bentuk, musik, tulisan, desain, dan karya seni. Kamu lebih mudah memahami sesuatu melalui perasaan, intuisi, dan kreativitas, bukan lewat aturan yang kaku.</p>
+                    <p><strong>Ciri-ciri Kamu:</strong> imajinatif dan suka berpikir bebas, menyukai seni: menggambar, menulis, musik, desain, atau video. Tidak suka aturan yang terlalu ketat, senang mengekspresikan diri melalui karya, peka terhadap detail visual dan emosi, suka mencoba hal baru dan bereksperimen dengan ide, tidak terlalu suka tugas yang kaku, monoton, atau terlalu teknis.</p>
+                    <h4>🎓 Arah Pendidikan Setelah SMP</h4>
+                    <p><strong>🎨 SMA – Pilihan yang Sangat Cocok</strong><br>
+                    SMA memberi ruang bagi kamu untuk mengembangkan kreativitas melalui pelajaran yang lebih fleksibel dan beragam.</p>
+                    <p>Jurusan yang cocok: IPS atau Bahasa</p>
+                    <p>Kedua jurusan ini memberi banyak ruang untuk: menulis kreatif, desain, komunikasi, seni dan budaya, proyek sosial dan kreatif. Jika kamu berbakat visual atau verbal, SMA adalah jalur yang memungkinkan bakatmu tumbuh bebas.</p>
+                    <p><strong>🕌 MA – Jika Kamu Ingin Suasana Religius + Kreativitas</strong><br>
+                    Di MA, kamu tetap bisa mengambil IPS atau Bahasa, dan mengembangkan diri melalui kegiatan: seni kaligrafi, desain, sastra, musik religi, proyek media kreatif sekolah.</p>
+                    <p><strong>🎭 SMK – Pilihan Kuat Jika Kamu Mau Keterampilan Kreatif</strong><br>
+                    Beberapa jurusan SMK sangat cocok untuk tipe Artistic karena fokusnya pada karya dan ekspresi visual.</p>
+                    <p>Jurusan SMK yang sesuai untuk tipe Artistic:</p>
+                    <ul>
+                        <li>Multimedia / Desain Grafis</li>
+                        <li>Animasi</li>
+                        <li>Perfilman</li>
+                        <li>Broadcasting (Radio & TV)</li>
+                        <li>Tata Busana</li>
+                        <li>Tata Kecantikan</li>
+                        <li>Seni Musik / Seni Tari</li>
+                        <li>Produksi Kreatif & Konten Digital</li>
+                    </ul>
+                    <p>SMK cocok untuk kamu yang ingin langsung mengasah skill artistik dan siap masuk industri kreatif.</p>
+                ` 
+            },
+            "S": { 
+                title: "Minat Social (Si Penolong)", 
+                description: `
+                    <h4>🌟 Hasil RIASEC Kamu: Social (Si Penolong)</h4>
+                    <p>Kamu adalah tipe yang peduli, hangat, dan suka membantu orang lain. Kamu nyaman bekerja dengan manusia, bukan mesin atau data. Kamu lebih mudah memahami sesuatu saat bisa berinteraksi, berdiskusi, mengajar, atau memberi dukungan. Kamu merasa puas ketika bisa membuat orang lain merasa lebih baik.</p>
+                    <p><strong>Ciri-ciri Kamu:</strong> suka membantu teman dan orang sekitar, mudah bergaul dan nyaman berbicara, sabar, ramah, dan empati tinggi. Senang bekerja dalam kelompok, menyukai kegiatan yang berhubungan dengan manusia, baik dalam mendengarkan dan memberi saran, tidak terlalu suka pekerjaan teknis, mesin, atau hal yang terlalu kaku.</p>
+                    <h4>🎓 Arah Pendidikan Setelah SMP</h4>
+                    <p><strong>🧑‍🏫 SMA – Pilihan Sangat Cocok</strong><br>
+                    SMA memberi kamu ruang untuk mengembangkan kemampuan komunikasi, sosial, dan kepemimpinan.</p>
+                    <p>Jurusan yang cocok: IPS</p>
+                    <p>Karena kamu akan belajar: sosiologi, geografi, ekonomi, ilmu sosial dan perilaku, komunikasi, yang semuanya mendukung bakat sosialmu.</p>
+                    <p><strong>🕌 MA – Jika Kamu Ingin Suasana Religius + Sosial</strong><br>
+                    Kamu bisa memilih IPS di MA agar tetap sejalan dengan minatmu membantu dan berinteraksi dengan orang lain. Kegiatan seperti organisasi sekolah, mentoring, dan kegiatan sosial keagamaan akan mendukung kepribadianmu.</p>
+                    <p><strong>🤝 SMK – Cocok Jika Jurusannya Berhubungan Dengan Layanan</strong><br>
+                    Walaupun SMK adalah jalur praktik, beberapa jurusan sangat cocok untuk tipe Social.</p>
+                    <p>Jurusan SMK yang sesuai:</p>
+                    <ul>
+                        <li>Perhotelan</li>
+                        <li>Usaha Layanan Pariwisata</li>
+                        <li>Bimbingan Wisata</li>
+                        <li>Layanan Kesehatan / Keperawatan Sosial</li>
+                        <li>Tata Boga (karena banyak interaksi pelayanan)</li>
+                        <li>Broadcasting (jika suka berbicara & menyampaikan informasi)</li>
+                    </ul>
+                    <p>Jurusan-­jurusan ini tetap memberi ruang besar untuk bekerja dengan manusia.</p>
+                ` 
+            },
+            "E": { 
+                title: "Minat Enterprising (Si Pemimpin)", 
+                description: `
+                    <h4>🌟 Hasil RIASEC Kamu: Enterprising (Si Pemimpin)</h4>
+                    <p>Kamu adalah tipe yang percaya diri, berani, dan suka mengambil peran memimpin. Kamu nyaman bekerja dengan orang, keputusan, rencana besar, dan tantangan baru. Kamu lebih mudah memahami sesuatu ketika bisa mengajak orang lain, bernegosiasi, berbicara, atau menjalankan sebuah proyek. Kamu senang saat bisa memengaruhi, mengatur, mengarahkan, atau membuat keputusan. Kamu cocok dalam situasi yang aktif, bergerak cepat, dan membutuhkan inisiatif.</p>
+                    <p><strong>Ciri-ciri Kamu:</strong> percaya diri dan mudah berbicara di depan orang. Suka memimpin, mengatur, dan mengajak orang lain. Berani mencoba hal baru dan mengambil risiko. Senang merencanakan atau mengorganisir acara. Pandai memotivasi dan mempengaruhi teman. Tertarik pada dunia bisnis, marketing, organisasi, atau kepemimpinan. Tidak terlalu suka aktivitas yang terlalu teknis atau terlalu banyak teori mendalam.</p>
+                    <h4>🎓 Arah Pendidikan Setelah SMP</h4>
+                    <p><strong>🧑‍💼 SMA – Pilihan Sangat Cocok</strong><br>
+                    SMA memberi ruang bagi kamu yang suka berorganisasi, memimpin, dan memperdalam ilmu sosial.</p>
+                    <p>Jurusan yang cocok: IPS</p>
+                    <p>Karena kamu akan belajar: ekonomi, manajemen dasar, sosiologi, geografi sosial, kewirausahaan, yang sangat sesuai untuk tipe Enterprising. IPS adalah jalur kuat untuk masa depan di dunia bisnis, komunikasi, atau kepemimpinan.</p>
+                    <p><strong>🕌 MA – Jika Kamu Ingin Suasana Religius + Organisasi Sosial</strong><br>
+                    Di MA, kamu tetap bisa memilih IPS dan aktif dalam: organisasi OSIS, da’i remaja, kegiatan sosial, kegiatan kewirausahaan sekolah. Lingkungan ini membantu mengasah kemampuan memimpin dan berbicaramu.</p>
+                    <p><strong>💼 SMK – Cocok Jika Kamu Ingin Langsung Masuk Dunia Bisnis</strong><br>
+                    Beberapa jurusan SMK sangat sesuai karena fokusnya pada bisnis, komunikasi, dan manajemen, yang merupakan kekuatan utama tipe Enterprising.</p>
+                    <p>Jurusan SMK yang cocok:</p>
+                    <ul>
+                        <li>Bisnis Daring & Pemasaran</li>
+                        <li>Manajemen Perkantoran</li>
+                        <li>Perbankan & Keuangan</li>
+                        <li>Perhotelan (karena penuh interaksi & kepemimpinan layanan)</li>
+                        <li>Broadcasting</li>
+                        <li>Tata Boga (jika kamu ingin berbisnis kuliner)</li>
+                        <li>Usaha Pariwisata / Travel</li>
+                    </ul>
+                    <p>SMK memberi kamu pengalaman nyata menjalankan proyek, usaha, atau layanan.</p>
+                    <p>Sebagai tipe Enterprising, kamu berkembang di lingkungan yang aktif, komunikatif, penuh tantangan, dan memberi ruang untuk memimpin. SMA/MA IPS adalah pilihan paling kuat, dan SMK Bisnis/Perhotelan/Pemasaran juga sangat cocok jika kamu ingin langsung mendalami dunia usaha dan kepemimpinan.</p>
+                ` 
+            },
+            "C": { 
+                title: "Minat Conventional (Si Pengatur)", 
+                description: `
+                    <h4>🌟 Hasil RIASEC Kamu: Conventional (Si Teratur)</h4>
+                    <p>Kamu adalah tipe yang rapi, teliti, dan suka bekerja dengan data, angka, catatan, dan aturan yang jelas. Kamu nyaman ketika segala sesuatu terorganisir, terstruktur, dan ada langkah-langkah yang bisa diikuti. Kamu lebih mudah memahami sesuatu ketika ada aturan, tabel, pola, atau instruksi yang sistematis. Kamu senang saat bisa menyusun, mengatur, mengarsipkan, menghitung, atau memastikan sesuatu berjalan sesuai prosedur.</p>
+                    <p><strong>Ciri-ciri Kamu:</strong> teliti dan rapi dalam mengerjakan tugas. Suka tabel, data, angka, atau pekerjaan dengan detail, menyukai aturan yang jelas dan langkah-langkah teratur. Senang mengatur jadwal, catatan, atau dokumen. Bertanggung jawab dan disiplin. Tidak terlalu suka sesuatu yang terlalu bebas, acak, atau tidak terstruktur. Suka tugas yang pasti dan jelas apa yang harus dilakukan.</p>
+                    <h4>🎓 Arah Pendidikan Setelah SMP</h4>
+                    <p><strong>📊 SMK – Pilihan Sangat Cocok</strong><br>
+                    SMK menawarkan banyak jurusan yang menggunakan data, administrasi, keuangan, dan ketelitian—hal yang sesuai dengan tipe Conventional.</p>
+                    <p>Jurusan SMK yang cocok:</p>
+                    <ul>
+                        <li>Akuntansi dan Keuangan</li>
+                        <li>Manajemen Perkantoran / Administrasi Perkantoran</li>
+                        <li>Perbankan & Keuangan Mikro</li>
+                        <li>Bisnis Daring & Pemasaran (bagian administrasi)</li>
+                        <li>Logistik</li>
+                        <li>Otomatisasi Tata Kelola Perkantoran</li>
+                    </ul>
+                    <p>Jurusan ini memberi kamu kegiatan seperti: mengatur data, menyusun dokumen, membuat laporan, mengelola administrasi, yang sesuai dengan kepribadianmu yang rapi dan sistematis.</p>
+                    <p><strong>📘 SMA – Jika Ingin Dasar Teori yang Luas</strong><br>
+                    Jika kamu ingin memperkuat dasar akademik, kamu bisa memilih: IPS</p>
+                    <p>Karena kamu akan bertemu: ekonomi, akuntansi, administrasi, manajemen dasar, yang cocok dengan kemampuanmu mengolah data dan informasi.</p>
+                    <p><strong>🕌 MA – Jika Kamu Ingin Lingkungan Terstruktur + Religius</strong><br>
+                    Di MA, kamu bisa mengambil IPS untuk tetap mendukung minatmu pada administrasi, peraturan, dan keteraturan.</p>
+                    <p>Sebagai tipe Conventional, kamu berkembang di lingkungan yang rapi, terstruktur, penuh data, angka, aturan, dan keteraturan. SMK jurusan administrasi & keuangan adalah pilihan paling cocok, sementara SMA/MA IPS bisa menjadi pilihan jika kamu ingin jalur akademik menuju administrasi, manajemen, atau akuntansi di masa depan.</p>
+                ` 
+            }
+        };
 
-        // --- 2. DAFTAR HASIL TAHAP 1 (RIASEC) ---
-        // $$$ PERUBAHAN BESAR DI SINI $$$
-        // Objek careerResults diganti dengan konten detail yang Anda berikan
-        const careerResults = {
-            "R": { 
-                title: "Minat Realistic (Si Pekerja)", 
-                description: `
-                    <h4>🌟 Hasil RIASEC Kamu: Realistic (Si Pekerja)</h4>
-                    <p>Kamu adalah tipe yang suka praktik langsung dan nyaman bekerja dengan alat, mesin, teknologi, atau aktivitas lapangan. Kamu lebih mudah paham saat mencoba sendiri daripada hanya membaca teori. Kamu senang kalau bisa melihat hasil nyata dari usaha kamu.</p>
-                    <p><strong>Ciri-ciri kamu:</strong> praktis dan suka hal nyata, tertarik pada alat, mesin, teknologi, suka langkah-langkah jelas, belajar cepat lewat praktik, teliti dan fokus, tidak terlalu suka teori atau banyak bicara.</p>
-                    <h4>🎓 Arah Pendidikan Setelah SMP</h4>
-                    <p><strong>🔧 SMK – Pilihan Paling Cocok</strong><br>
-                    Karena kamu tipe Realistic, lingkungan penuh praktik sangat sesuai untukmu.</p>
-                    <p>Jurusan yang cocok:</p>
-                    <ul>
-                        <li>Teknik Mesin</li>
-                        <li>Teknik Kendaraan Ringan</li>
-                        <li>Teknik Elektro</li>
-                        <li>TKJ (Teknik Komputer & Jaringan)</li>
-                        <li>Desain & Bangunan</li>
-                        <li>Agribisnis / Agroteknologi</li>
-                        <li>Perkapalan / Nautika</li>
-                        <li>Teknik Pengelasan</li>
-                    </ul>
-                    <p><strong>🔬 SMA – Jika Ingin Dasar Akademik</strong><br>
-                    Cocok jika kamu ingin lanjut kuliah di teknik atau sains.<br>
-                    Jurusan: 👉 MIPA</p>
-                    <p><strong>🕌 MA – Jika Ingin Suasana Religius + Sains</strong><br>
-                    Pilih IPA agar tetap sejalan dengan minat teknis kamu.</p>
-                ` 
-            },
-            "I": { 
-                title: "Minat Investigative (Si Pemikir)", 
-                description: `
-                    <h4>🌟 Hasil RIASEC Kamu: Investigative (Si Peneliti / Si Pemikir)</h4>
-                    <p>Kamu adalah tipe yang suka mencari tahu, menganalisis, dan memecahkan masalah dengan berpikir mendalam. Kamu nyaman bekerja dengan ide, data, informasi, rumus, eksperimen, dan hal-hal yang membutuhkan logika. Kamu lebih mudah paham saat menyelidiki, membaca, atau mengamati pola daripada melakukan aktivitas fisik.</p>
-                    <p><strong>Ciri-ciri Kamu:</strong> suka berpikir, meneliti, dan menganalisis, penasaran dan suka bertanya “mengapa?”, menyukai pelajaran sains, matematika, teknologi, senang mengamati pola, eksperimen, dan mencari solusi, lebih suka bekerja sendiri daripada banyak bicara, teliti, fokus, dan suka tantangan logis, tidak terlalu suka pekerjaan fisik atau yang terlalu sosial.</p>
-                    <h4>🎓 Arah Pendidikan Setelah SMP</h4>
-                    <p><strong>🔬 SMA – Pilihan Paling Cocok</strong><br>
-                    SMA memberi kamu ruang untuk memperkuat logika, teori, dan sains, yang sangat sesuai untuk tipe Investigative menurut teori Holland.</p>
-                    <p>Jurusan yang cocok: 👉MIPA (Matematika & Ilmu Pengetahuan Alam)</p>
-                    <p>Di MIPA, kamu bertemu: Matematika, Fisika, Kimia, Biologi, Eksperimen dan penelitian. Ini adalah lingkungan yang sesuai dengan cara kamu berpikir dan belajar.</p>
-                    <p><strong>🕌 MA – Jika Kamu Ingin Suasana Religius + Sains</strong><br>
-                    Jika kamu ingin sekolah dengan nuansa religius, kamu tetap bisa memilih jalur IPA agar minat Investigative-mu tetap berkembang.</p>
-                    <p><strong>🧪 SMK – Bisa Jadi Pilihan Jika Jurusannya Sains/Analisis</strong><br>
-                    SMK bukan pilihan utama untuk tipe Investigative, tapi beberapa jurusan masih sesuai, terutama yang berbasis analisis dan pengamatan.</p>
-                    <p>Jurusan SMK yang cocok:</p>
-                    <ul>
-                        <li>Analis Kimia</li>
-                        <li>Farmasi</li>
-                        <li>Teknologi Laboratorium</li>
-                        <li>Geologi / Geomatika</li>
-                        <li>Multimedia (jika suka analisis data digital)</li>
-            _       </ul>
-                ` 
-            },
-            "A": { 
-                title: "Minat Artistic (Si Kreator)", 
-                description: `
-                    <h4>🌟 Hasil RIASEC Kamu: Artistic (Si Kreator)</h4>
-                    <p>Kamu adalah tipe yang penuh imajinasi, kreatif, dan suka mengekspresikan diri. Kamu nyaman bekerja dengan ide, warna, bentuk, musik, tulisan, desain, dan karya seni. Kamu lebih mudah memahami sesuatu melalui perasaan, intuisi, dan kreativitas, bukan lewat aturan yang kaku.</p>
-                    <p><strong>Ciri-ciri Kamu:</strong> imajinatif dan suka berpikir bebas, menyukai seni: menggambar, menulis, musik, desain, atau video. Tidak suka aturan yang terlalu ketat, senang mengekspresikan diri melalui karya, peka terhadap detail visual dan emosi, suka mencoba hal baru dan bereksperimen dengan ide, tidak terlalu suka tugas yang kaku, monoton, atau terlalu teknis.</p>
-                    <h4>🎓 Arah Pendidikan Setelah SMP</h4>
-                    <p><strong>🎨 SMA – Pilihan yang Sangat Cocok</strong><br>
-                    SMA memberi ruang bagi kamu untuk mengembangkan kreativitas melalui pelajaran yang lebih fleksibel dan beragam.</p>
-                    <p>Jurusan yang cocok: 👉IPS atau Bahasa</p>
-                    <p>Kedua jurusan ini memberi banyak ruang untuk: menulis kreatif, desain, komunikasi, seni dan budaya, proyek sosial dan kreatif. Jika kamu berbakat visual atau verbal, SMA adalah jalur yang memungkinkan bakatmu tumbuh bebas.</p>
-                    <p><strong>🕌 MA – Jika Kamu Ingin Suasana Religius + Kreativitas</strong><br>
-                    Di MA, kamu tetap bisa mengambil IPS atau Bahasa, dan mengembangkan diri melalui kegiatan: seni kaligrafi, desain, sastra, musik religi, proyek media kreatif sekolah.</p>
-                    <p><strong>🎭 SMK – Pilihan Kuat Jika Kamu Mau Keterampilan Kreatif</strong><br>
-                    Beberapa jurusan SMK sangat cocok untuk tipe Artistic karena fokusnya pada karya dan ekspresi visual.</p>
-                    <p>Jurusan SMK yang sesuai untuk tipe Artistic:</p>
-                    <ul>
-                        <li>Multimedia / Desain Grafis</li>
-                        <li>Animasi</li>
-                        <li>Perfilman</li>
-                        <li>Broadcasting (Radio & TV)</li>
-                        <li>Tata Busana</li>
-                        <li>Tata Kecantikan</li>
-                        <li>Seni Musik / Seni Tari</li>
-                        <li>Produksi Kreatif & Konten Digital</li>
-                    </ul>
-                    <p>SMK cocok untuk kamu yang ingin langsung mengasah skill artistik dan siap masuk industri kreatif.</p>
-                ` 
-            },
-            "S": { 
-                title: "Minat Social (Si Penolong)", 
-                description: `
-                    <h4>🌟 Hasil RIASEC Kamu: Social (Si Penolong)</h4>
-                    <p>Kamu adalah tipe yang peduli, hangat, dan suka membantu orang lain. Kamu nyaman bekerja dengan manusia, bukan mesin atau data. Kamu lebih mudah memahami sesuatu saat bisa berinteraksi, berdiskusi, mengajar, atau memberi dukungan. Kamu merasa puas ketika bisa membuat orang lain merasa lebih baik.</p>
-                    <p><strong>Ciri-ciri Kamu:</strong> suka membantu teman dan orang sekitar, mudah bergaul dan nyaman berbicara, sabar, ramah, dan empati tinggi. Senang bekerja dalam kelompok, menyukai kegiatan yang berhubungan dengan manusia, baik dalam mendengarkan dan memberi saran, tidak terlalu suka pekerjaan teknis, mesin, atau hal yang terlalu kaku.</p>
-                    <h4>🎓 Arah Pendidikan Setelah SMP</h4>
-                    <p><strong>🧑‍🏫 SMA – Pilihan Sangat Cocok</strong><br>
-                    SMA memberi kamu ruang untuk mengembangkan kemampuan komunikasi, sosial, dan kepemimpinan.</p>
-                    <p>Jurusan yang cocok: 👉IPS</p>
-                    <p>Karena kamu akan belajar: sosiologi, geografi, ekonomi, ilmu sosial dan perilaku, komunikasi, yang semuanya mendukung bakat sosialmu.</p>
-                    <p><strong>🕌 MA – Jika Kamu Ingin Suasana Religius + Sosial</strong><br>
-                    Kamu bisa memilih IPS di MA agar tetap sejalan dengan minatmu membantu dan berinteraksi dengan orang lain. Kegiatan seperti organisasi sekolah, mentoring, dan kegiatan sosial keagamaan akan mendukung kepribadianmu.</p>
-                    <p><strong>🤝 SMK – Cocok Jika Jurusannya Berhubungan Dengan Layanan</strong><br>
-                    Walaupun SMK adalah jalur praktik, beberapa jurusan sangat cocok untuk tipe Social.</p>
-                    <p>Jurusan SMK yang sesuai:</p>
-                    <ul>
-                        <li>Perhotelan</li>
-                        <li>Usaha Layanan Pariwisata</li>
-                        <li>Bimbingan Wisata</li>
-                        <li>Layanan Kesehatan / Keperawatan Sosial</li>
-                        <li>Tata Boga (karena banyak interaksi pelayanan)</li>
-                        <li>Broadcasting (jika suka berbicara & menyampaikan informasi)</li>
-                    </ul>
-                    <p>Jurusan-­jurusan ini tetap memberi ruang besar untuk bekerja dengan manusia.</p>
-                ` 
-            },
-            "E": { 
-                title: "Minat Enterprising (Si Pemimpin)", 
-                description: `
-                    <h4>🌟 Hasil RIASEC Kamu: Enterprising (Si Pemimpin)</h4>
-                    <p>Kamu adalah tipe yang percaya diri, berani, dan suka mengambil peran memimpin. Kamu nyaman bekerja dengan orang, keputusan, rencana besar, dan tantangan baru. Kamu lebih mudah memahami sesuatu ketika bisa mengajak orang lain, bernegosiasi, berbicara, atau menjalankan sebuah proyek. Kamu senang saat bisa memengaruhi, mengatur, mengarahkan, atau membuat keputusan. Kamu cocok dalam situasi yang aktif, bergerak cepat, dan membutuhkan inisiatif.</p>
-                    <p><strong>Ciri-ciri Kamu:</strong> percaya diri dan mudah berbicara di depan orang. Suka memimpin, mengatur, dan mengajak orang lain. Berani mencoba hal baru dan mengambil risiko. Senang merencanakan atau mengorganisir acara. Pandai memotivasi dan mempengaruhi teman. Tertarik pada dunia bisnis, marketing, organisasi, atau kepemimpinan. Tidak terlalu suka aktivitas yang terlalu teknis atau terlalu banyak teori mendalam.</p>
-                    <h4>🎓 Arah Pendidikan Setelah SMP</h4>
-                    <p><strong>🧑‍💼 SMA – Pilihan Sangat Cocok</strong><br>
-                    SMA memberi ruang bagi kamu yang suka berorganisasi, memimpin, dan memperdalam ilmu sosial.</p>
-                    <p>Jurusan yang cocok: 👉IPS</p>
-                    <p>Karena kamu akan belajar: ekonomi, manajemen dasar, sosiologi, geografi sosial, kewirausahaan, yang sangat sesuai untuk tipe Enterprising. IPS adalah jalur kuat untuk masa depan di dunia bisnis, komunikasi, atau kepemimpinan.</p>
-                    <p><strong>🕌 MA – Jika Kamu Ingin Suasana Religius + Organisasi Sosial</strong><br>
-                    Di MA, kamu tetap bisa memilih IPS dan aktif dalam: organisasi OSIS, da’i remaja, kegiatan sosial, kegiatan kewirausahaan sekolah. Lingkungan ini membantu mengasah kemampuan memimpin dan berbicaramu.</p>
-                    <p><strong>💼 SMK – Cocok Jika Kamu Ingin Langsung Masuk Dunia Bisnis</strong><br>
-                    Beberapa jurusan SMK sangat sesuai karena fokusnya pada bisnis, komunikasi, dan manajemen, yang merupakan kekuatan utama tipe Enterprising.</p>
-                    <p>Jurusan SMK yang cocok:</p>
-                    <ul>
-                        <li>Bisnis Daring & Pemasaran</li>
-                        <li>Manajemen Perkantoran</li>
-              _         <li>Perbankan & Keuangan</li>
-                        <li>Perhotelan (karena penuh interaksi & kepemimpinan layanan)</li>
-                        <li>Broadcasting</li>
-                        <li>Tata Boga (jika kamu ingin berbisnis kuliner)</li>
-                        <li>Usaha Pariwisata / Travel</li>
-                    </ul>
-                    <p>SMK memberi kamu pengalaman nyata menjalankan proyek, usaha, atau layanan.</p>
-                    <p>Sebagai tipe Enterprising, kamu berkembang di lingkungan yang aktif, komunikatif, penuh tantangan, dan memberi ruang untuk memimpin. SMA/MA IPS adalah pilihan paling kuat, dan SMK Bisnis/Perhotelan/Pemasaran juga sangat cocok jika kamu ingin langsung mendalami dunia usaha dan kepemimpinan.</p>
-                ` 
-            },
-            "C": { 
-                title: "Minat Conventional (Si Pengatur)", 
-                description: `
-                    <h4>🌟 Hasil RIASEC Kamu: Conventional (Si Teratur)</h4>
-                    <p>Kamu adalah tipe yang rapi, teliti, dan suka bekerja dengan data, angka, catatan, dan aturan yang jelas. Kamu nyaman ketika segala sesuatu terorganisir, terstruktur, dan ada langkah-langkah yang bisa diikuti. Kamu lebih mudah memahami sesuatu ketika ada aturan, tabel, pola, atau instruksi yang sistematis. Kamu senang saat bisa menyusun, mengatur, mengarsipkan, menghitung, atau memastikan sesuatu berjalan sesuai prosedur.</p>
-                    <p><strong>Ciri-ciri Kamu:</strong> teliti dan rapi dalam mengerjakan tugas. Suka tabel, data, angka, atau pekerjaan dengan detail, menyukai aturan yang jelas dan langkah-langkah teratur. Senang mengatur jadwal, catatan, atau dokumen. Bertanggung jawab dan disiplin. Tidak terlalu suka sesuatu yang terlalu bebas, acak, atau tidak terstruktur. Suka tugas yang pasti dan jelas apa yang harus dilakukan.</p>
-                    <h4>🎓 Arah Pendidikan Setelah SMP</h4>
-                    <p><strong>📊 SMK – Pilihan Sangat Cocok</strong><br>
-                    SMK menawarkan banyak jurusan yang menggunakan data, administrasi, keuangan, dan ketelitian—hal yang sesuai dengan tipe Conventional.</p>
-                    <p>Jurusan SMK yang cocok:</p>
-                    <ul>
-                        <li>Akuntansi dan Keuangan</li>
-                        <li>Manajemen Perkantoran / Administrasi Perkantoran</li>
-                        <li>Perbankan & Keuangan Mikro</li>
-                        <li>Bisnis Daring & Pemasaran (bagian administrasi)</li>
-                        <li>Logistik</li>
-        _               <li>Otomatisasi Tata Kelola Perkantoran</li>
-                    </ul>
-                    <p>Jurusan ini memberi kamu kegiatan seperti: mengatur data, menyusun dokumen, membuat laporan, mengelola administrasi, yang sesuai dengan kepribadianmu yang rapi dan sistematis.</p>
-                    <p><strong>📘 SMA – Jika Ingin Dasar Teori yang Luas</strong><br>
-                  _   Jika kamu ingin memperkuat dasar akademik, kamu bisa memilih: 👉 IPS</p>
-Name                   <p>Karena kamu akan bertemu: ekonomi, akuntansi, administrasi, manajemen dasar, yang cocok dengan kemampuanmu mengolah data dan informasi.</p>
-                    <p><strong>🕌 MA – Jika Kamu Ingin Lingkungan Terstruktur + Religius</strong><br>
-                    Di MA, kamu bisa mengambil IPS untuk tetap mendukung minatmu pada administrasi, peraturan, dan keteraturan.</p>
-                    <p>Sebagai tipe Conventional, kamu berkembang di lingkungan yang rapi, terstruktur, penuh data, angka, aturan, dan keteraturan. SMK jurusan administrasi & keuangan adalah pilihan paling cocok, sementara SMA/MA IPS bisa menjadi pilihan jika kamu ingin jalur akademik menuju administrasi, manajemen, atau akuntansi di masa depan.</p>
-                ` 
-            }
-        };
+        // --- 3. DAFTAR HASIL TAHAP 2 (SEKOLAH) ---
+        const schoolResults = {
+            "smk": { title: "Rekomendasi: SMK (Sekolah Menengah Kejuruan)", description: "Pilihanmu menunjukkan kamu lebih suka pembelajaran yang praktis dan ingin cepat memiliki keahlian khusus untuk dunia kerja. SMK adalah pilihan tepat untuk mengasah keterampilan teknis secara mendalam." },
+            "sma": { title: "Rekomendasi: SMA (Sekolah Menengah Atas)", description: "Pilihanmu menunjukkan kamu menikmati pembelajaran teori, analisis, dan ingin melanjutkan ke jenjang universitas. SMA akan memberimu fondasi akademik yang kuat di bidang IPA, IPS, atau Bahasa." },
+            "ma": { title: "Rekomendasi: MA (Madrasah Aliyah)", description: "Pilihanmu menunjukkan kamu ingin menyeimbangkan antara ilmu pengetahuan umum dan pendalaman ilmu agama. MA adalah pilihan yang sangat baik untuk mendapatkan lingkungan belajar yang religius sekaligus mempersiapkan diri untuk universitas." }
+        };
 
-        // --- 3. DAFTAR HASIL TAHAP 2 (SEKOLAH) ---
-        const schoolResults = {
-            "smk": { title: "Rekomendasi: SMK (Sekolah Menengah Kejuruan)", description: "Pilihanmu menunjukkan kamu lebih suka pembelajaran yang praktis dan ingin cepat memiliki keahlian khusus untuk dunia kerja. SMK adalah pilihan tepat untuk mengasah keterampilan teknis secara mendalam." },
-            "sma": { title: "Rekomendasi: SMA (Sekolah Menengah Atas)", description: "Pilihanmu menunjukkan kamu menikmati pembelajaran teori, analisis, dan ingin melanjutkan ke jenjang universitas. SMA akan memberimu fondasi akademik yang kuat di bidang IPA, IPS, atau Bahasa." },
-M         "ma": { title: "Rekomendasi: MA (Madrasah Aliyah)", description: "Pilihanmu menunjukkan kamu ingin menyeimbangkan antara ilmu pengetahuan umum dan pendalaman ilmu agama. MA adalah pilihan yang sangat baik untuk mendapatkan lingkungan belajar yang religius sekaligus mempersiapkan diri untuk universitas." }
-        };
-
-        // --- 4. LOGIKA FORM INFO PENGGUNA ---
-        const userForm = document.getElementById('user-form');
-        const riasecForm = document.getElementById('riasec-form');
-        
-        userForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-            userData.nama = document.getElementById('user-name').value;
-            userData.kelas = document.getElementById('user-class').value;
-            userForm.style.display = 'none';
-            riasecForm.style.display = 'block';
-            window.scrollTo(0, 0);
-        });
+        // --- 4. LOGIKA FORM INFO PENGGUNA ---
+        const userForm = document.getElementById('user-form');
+        const riasecForm = document.getElementById('riasec-form');
+        
+        userForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            userData.nama = document.getElementById('user-name').value;
+            userData.kelas = document.getElementById('user-class').value;
+            userForm.style.display = 'none';
+            riasecForm.style.display = 'block';
+            window.scrollTo(0, 0);
+        });
 
 
-        // --- 5. LOGIKA UNTUK MENAMPILKAN PERTANYAAN TAHAP 1 ---
-        const questionsWrapperRIASEC = document.getElementById('questions-wrapper-riasec');
-        questionsRIASEC.forEach((q, index) => {
-            const questionDiv = document.createElement('div');
-            questionDiv.className = 'question';
-            questionDiv.innerHTML = `
-                <p>${index + 1}. ${q.question}</p>
-                <div class="options" style="flex-direction: row;">
-                    <label class="option" style="flex-grow: 1;"><input type="radio" name="${q.name}" value="${q.type}" required> Iya</label>
-                    <label class="option" style="flex-grow: 1;"><input type="radio" name="${q.name}" value="none"> Tidak</label>
-                </div>
-            `;
-            questionsWrapperRIASEC.appendChild(questionDiv);
-        });
+        // --- 5. LOGIKA UNTUK MENAMPILKAN PERTANYAAN TAHAP 1 ---
+        const questionsWrapperRIASEC = document.getElementById('questions-wrapper-riasec');
+        questionsRIASEC.forEach((q, index) => {
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'question';
+            questionDiv.innerHTML = `
+                <p>${index + 1}. ${q.question}</p>
+                <div class="options" style="flex-direction: row;">
+                    <label class="option" style="flex-grow: 1;"><input type="radio" name="${q.name}" value="${q.type}" required> Iya</label>
+                    <label class="option" style="flex-grow: 1;"><input type="radio" name="${q.name}" value="none"> Tidak</label>
+                </div>
+            `;
+            questionsWrapperRIASEC.appendChild(questionDiv);
+        });
 
-        // --- 6. LOGIKA SUBMIT TAHAP 1 (RIASEC) ---
-        const riasecResultContainer = document.getElementById('riasec-result-container');
-        const schoolForm = document.getElementById('school-form');
+        // --- 6. LOGIKA SUBMIT TAHAP 1 (RIASEC) ---
+        const riasecResultContainer = document.getElementById('riasec-result-container');
+        const schoolForm = document.getElementById('school-form');
 
-        riasecForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-            const scores = { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 };
-            const formData = new FormData(riasecForm);
-            for (let [name, value] of formData.entries()) {
-                if (value !== 'none') { scores[value]++; }
-            }
+        riasecForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const scores = { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 };
+            const formData = new FormData(riasecForm);
+            for (let [name, value] of formData.entries()) {
+                if (value !== 'none') { scores[value]++; }
+            }
 
-            // --- PERUBAHAN UNTUK SKOR SERI ---
+            // 1. Cari nilai skor tertinggi
+            const allScores = Object.values(scores);
+            const highestScore = Math.max(...allScores);
 
-            // 1. Cari nilai skor tertinggi
-            const allScores = Object.values(scores);
-            const highestScore = Math.max(...allScores);
+            // 2. Kumpulkan SEMUA tipe yang memiliki skor tertinggi (skor > 0)
+            let highestTypes = []; 
+            if (highestScore > 0) {
+                for (let type in scores) {
+                    if (scores[type] === highestScore) {
+                        highestTypes.push(type); 
+                    }
+                }
+            } else {
+                highestTypes = ["(Tidak ada minat dominan)"]; 
+            }
 
-            // 2. Kumpulkan SEMUA tipe yang memiliki skor tertinggi (skor > 0)
-            let highestTypes = []; 
-            if (highestScore > 0) {
-                for (let type in scores) {
-                    if (scores[type] === highestScore) {
-                        highestTypes.push(type); 
-                    }
-                }
-            } else {
-                highestTypes = ["(Tidak ada minat dominan)"]; 
-            }
+            // 3. Simpan hasil ke variabel global
+            finalRIASECScores = scores;
+            finalRIASECType = highestTypes.join(", "); 
 
-            // 3. Simpan hasil ke variabel global
-            finalRIASECScores = scores;
-            finalRIASECType = highestTypes.join(", "); 
+            // 4. Gabungkan judul dan deskripsi dari semua tipe tertinggi
+            let combinedTitle = "";
+            let combinedDescription = "";
 
-            // 4. Gabungkan judul dan deskripsi dari semua tipe tertinggi
-            let combinedTitle = "";
-            let combinedDescription = "";
+            if (highestTypes[0] === "(Tidak ada minat dominan)") {
+                combinedTitle = "Belum Ada Minat Dominan";
+                combinedDescription = "<p>Kamu belum menunjukkan minat yang kuat pada salah satu tipe. Tidak apa-apa! Ini wajar di usiamu. Coba eksplorasi lebih banyak kegiatan untuk menemukan apa yang kamu sukai.</p>";
+            } else {
+                combinedTitle = highestTypes
+                    .map(type => careerResults[type].title) 
+                    .join(" & "); 
 
-            if (highestTypes[0] === "(Tidak ada minat dominan)") {
-                combinedTitle = "Belum Ada Minat Dominan";
-                combinedDescription = "<p>Kamu belum menunjukkan minat yang kuat pada salah satu tipe. Tidak apa-apa! Ini wajar di usiamu. Coba eksplorasi lebih banyak kegiatan untuk menemukan apa yang kamu sukai.</p>";
-            } else {
-                combinedTitle = highestTypes
-                    .map(type => careerResults[type].title) 
-                    .join(" & "); 
+                combinedDescription = highestTypes
+                    .map(type => careerResults[type].description) 
+                    .join("<hr style='border-top: 1px dashed #0096FF; margin: 25px 0;'>");
+            }
 
-                // $$$ PERUBAHAN KECIL DI SINI $$$
-                // Logika diubah agar tidak menambah judul duplikat
-                // Cukup tampilkan deskripsi lengkap, gabung dengan <hr>
-                combinedDescription = highestTypes
-                    .map(type => careerResults[type].description) 
-                    .join("<hr style='border-top: 1px dashed #4ecdc4; margin: 25px 0;'>"); // Gabungkan dengan garis pemisah
-            }
+            // 5. Tampilkan hasil gabungan di UI
+            document.getElementById('riasec-title').innerHTML = combinedTitle;
+            document.getElementById('riasec-description').innerHTML = combinedDescription;
+            document.getElementById('riasec-scores').innerText = `Realistic: ${scores.R} | Investigative: ${scores.I} | Artistic: ${scores.A} | Social: ${scores.S} | Enterprising: ${scores.E} | Conventional: ${scores.C}`;
+            
+            // Tampilkan bagian selanjutnya
+            riasecForm.style.display = 'none';
+            riasecResultContainer.style.display = 'block';
+            schoolForm.style.display = 'block';
+            riasecResultContainer.scrollIntoView({ behavior: 'smooth' });
+        });
 
-            // 5. Tampilkan hasil gabungan di UI
-            document.getElementById('riasec-title').innerHTML = combinedTitle;
-            document.getElementById('riasec-description').innerHTML = combinedDescription;
-NTY       document.getElementById('riasec-scores').innerText = `Realistic: ${scores.R} | Investigative: ${scores.I} | Artistic: ${scores.A} | Social: ${scores.S} | Enterprising: ${scores.E} | Conventional: ${scores.C}`;
-            
-            // --- AKHIR PERUBAHAN ---
-            
-            riasecForm.style.display = 'none';
-            riasecResultContainer.style.display = 'block';
-            schoolForm.style.display = 'block';
-            riasecResultContainer.scrollIntoView({ behavior: 'smooth' });
-        });
+        // --- 7. LOGIKA PERCABANGAN TAHAP 2 (SEKOLAH) ---
+        const q31Radios = document.querySelectorAll('input[name="q31"]');
+        const q32Wrapper = document.getElementById('q32-wrapper');
+        const q32Radios = document.querySelectorAll('input[name="q32"]');
+        const q33Wrapper = document.getElementById('q33-wrapper');
 
-        // --- 7. LOGIKA PERCABANGAN TAHAP 2 (SEKOLAH) ---
-        // (Logika ini tidak berubah)
-        const q31Radios = document.querySelectorAll('input[name="q31"]');
-        const q32Wrapper = document.getElementById('q32-wrapper');
-        const q32Radios = document.querySelectorAll('input[name="q32"]');
-        const q33Wrapper = document.getElementById('q33-wrapper');
-        q31Radios.forEach(radio => {
-            radio.addEventListener('change', function() {
-                document.querySelectorAll('input[name="q32"]').forEach(r => r.required = false);
-                document.querySelectorAll('input[name="q33"]').forEach(r => r.required = false);
-                if (this.value === 'teori') {
-                    q32Wrapper.style.display = 'block';
-                    document.querySelectorAll('input[name="q32"]').forEach(r => r.required = true);
-                } else {
-                    q32Wrapper.style.display = 'none';
-                    q33Wrapper.style.display = 'none';
-                }
-            });
-        });
-        q32Radios.forEach(radio => {
-            radio.addEventListener('change', function() {
-                document.querySelectorAll('input[name="q33"]').forEach(r => r.required = false);
-content               if (this.value === 'kuliah') {
-                    q33Wrapper.style.display = 'block';
-                    document.querySelectorAll('input[name="q33"]').forEach(r => r.required = true);
-                } else {
-                    q33Wrapper.style.display = 'none';
-                }
-            });
-        });
+        q31Radios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.querySelectorAll('input[name="q32"]').forEach(r => r.required = false);
+                document.querySelectorAll('input[name="q33"]').forEach(r => r.required = false);
+                
+                // Reset tampilan
+                q32Wrapper.style.display = 'none';
+                q33Wrapper.style.display = 'none';
+                
+                if (this.value === 'teori') {
+                    q32Wrapper.style.display = 'block';
+                    document.querySelectorAll('input[name="q32"]').forEach(r => r.required = true);
+                }
+            });
+        });
+        q32Radios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.querySelectorAll('input[name="q33"]').forEach(r => r.required = false);
+                
+                // Reset tampilan
+                q33Wrapper.style.display = 'none';
 
-        // --- 8. LOGIKA SUBMIT TAHAP 2 (SEKOLAH) & SIMPAN KE GOOGLE SHEETS ---
-        // (Logika ini tidak berubah)
-        const schoolResultContainer = document.getElementById('school-result-container');
-        const submitSchoolBtn = document.getElementById('submit-school');
-        const saveStatus = document.getElementById('save-status');
+                if (this.value === 'kuliah') {
+                    q33Wrapper.style.display = 'block';
+                    document.querySelectorAll('input[name="q33"]').forEach(r => r.required = true);
+                }
+            });
+        });
 
-        schoolForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-            
-            let finalOutcome = "";
-            const q31Value = document.querySelector('input[name="q31"]:checked').value;
-            
-            if (q31Value === 'smk') finalOutcome = 'smk';
-            else if (q31Value === 'ma') finalOutcome = 'ma';
-            else if (q31Value === 'teori') {
-                const q32Value = document.querySelector('input[name="q32"]:checked').value;
-                if (q32Value === 'smk') finalOutcome = 'smk';
-                else if (q32Value === 'ma') finalOutcome = 'ma';
-                else if (q32Value === 'kuliah') {
-                    const q33Value = document.querySelector('input[name="q33"]:checked').value;
-                    if (q33Value === 'sma') finalOutcome = 'sma';
-                    else if (q33Value === 'ma') finalOutcome = 'ma';
-                }
-            }
+        // --- 8. LOGIKA SUBMIT TAHAP 2 (SEKOLAH) & SIMPAN KE GOOGLE SHEETS ---
+        const schoolResultContainer = document.getElementById('school-result-container');
+        const submitSchoolBtn = document.getElementById('submit-school');
+        const saveStatus = document.getElementById('save-status');
 
-            finalSchoolResult = finalOutcome;
+        schoolForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            let finalOutcome = "";
+            const q31Value = document.querySelector('input[name="q31"]:checked').value;
+            
+            if (q31Value === 'smk') finalOutcome = 'smk';
+            else if (q31Value === 'ma') finalOutcome = 'ma';
+            else if (q31Value === 'teori') {
+                const q32Value = document.querySelector('input[name="q32"]:checked').value;
+                if (q32Value === 'smk') finalOutcome = 'smk';
+                else if (q32Value === 'ma') finalOutcome = 'ma';
+                else if (q32Value === 'kuliah') {
+                    const q33Value = document.querySelector('input[name="q33"]:checked').value;
+                    if (q33Value === 'sma') finalOutcome = 'sma';
+                    else if (q33Value === 'ma') finalOutcome = 'ma';
+                }
+            }
 
-            if (finalSchoolResult) {
-                const result = schoolResults[finalSchoolResult];
-                document.getElementById('school-title').innerText = result.title;
-                document.getElementById('school-description').innerText = result.description;
-                schoolResultContainer.style.display = 'block';
-                schoolResultContainer.scrollIntoView({ behavior: 'smooth' });
-                submitSchoolBtn.disabled = true;
-                submitSchoolBtn.innerText = "Menyimpan data...";
-                saveStatus.innerText = "Sedang menyimpan hasil...";
-                
-                // Kirim data ke Google Sheets
-                saveToGoogleSheets();
-            }
-        });
+            finalSchoolResult = finalOutcome;
 
-        // --- 9. FUNGSI BARU UNTUK MENYIMPAN DATA (DENGAN FIX 'text/plain') ---
-        // (Logika ini tidak berubah)
-        async function saveToGoogleSheets() {
-            // Siapkan data payload
-            const dataToSave = {
-                nama: userData.nama,
-                kelas: userData.kelas,
-                tipeMinat: finalRIASECType, // Ini sekarang bisa "R, A"
-                skor: finalRIASECScores,
-                rekomendasiSekolah: finalSchoolResult.toUpperCase()
-            };
+            if (finalSchoolResult) {
+                const result = schoolResults[finalSchoolResult];
+                document.getElementById('school-title').innerText = result.title;
+                document.getElementById('school-description').innerText = result.description;
+                schoolResultContainer.style.display = 'block';
+                schoolResultContainer.scrollIntoView({ behavior: 'smooth' });
+                submitSchoolBtn.disabled = true;
+                submitSchoolBtn.innerText = "Menyimpan data...";
+                saveStatus.innerText = "Sedang menyimpan hasil...";
+                
+                // Kirim data ke Google Sheets
+                saveToGoogleSheets();
+            }
+        });
 
-            try {
-                // Kirim data menggunakan fetch API
-                const response = await fetch(appsScriptURL, {
-                    method: 'POST',
-                    mode: 'cors',
-                    headers: {
-                        'Content-Type': 'text/plain;charset=utf-8', 
-                    },
-                    body: JSON.stringify(dataToSave)
-No               });
+        // --- 9. FUNGSI BARU UNTUK MENYIMPAN DATA (DENGAN FIX 'text/plain') ---
+        async function saveToGoogleSheets() {
+            // Siapkan data payload
+            const dataToSave = {
+                nama: userData.nama,
+                kelas: userData.kelas,
+                tipeMinat: finalRIASECType, // Ini sekarang bisa "R, A"
+                skorR: finalRIASECScores.R,
+                skorI: finalRIASECScores.I,
+                skorA: finalRIASECScores.A,
+                skorS: finalRIASECScores.S,
+                skorE: finalRIASECScores.E,
+                skorC: finalRIASECScores.C,
+                rekomendasiSekolah: finalSchoolResult.toUpperCase()
+            };
 
-                const result = await response.json();
+            try {
+                // Kirim data menggunakan fetch API
+                const response = await fetch(appsScriptURL, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8', 
+                    },
+                    body: JSON.stringify(dataToSave)
+                });
 
-                if (result.result === "success") {
-                    submitSchoolBtn.innerText = "Data Berhasil Disimpan";
-                    saveStatus.innerText = "Hasil Anda telah berhasil disimpan.";
-                    saveStatus.style.color = "green";
-                } else {
-                    throw new Error(result.message || "Unknown error");
-                }
-            } catch (error) {
-                console.error('Error saving to Google Sheets:', error);
-                submitSchoolBtn.innerText = "Gagal Menyimpan";
-      A           saveStatus.innerText = "Gagal menyimpan data. Coba lagi atau hubungi admin.";
-                saveStatus.style.color = "red";
-                submitSchoolBtn.disabled = false;
-            }
-        }
+                const result = await response.json();
 
-    </script>
-</body>
+                if (result.result === "success") {
+                    submitSchoolBtn.innerText = "Data Berhasil Disimpan";
+                    saveStatus.innerText = "Hasil Anda telah berhasil disimpan.";
+                    saveStatus.style.color = "green";
+                } else {
+                    throw new Error(result.message || "Unknown error");
+                }
+            } catch (error) {
+                console.error('Error saving to Google Sheets:', error);
+                submitSchoolBtn.innerText = "Gagal Menyimpan";
+                saveStatus.innerText = "Gagal menyimpan data. Coba lagi atau hubungi admin.";
+                saveStatus.style.color = "red";
+                submitSchoolBtn.disabled = false;
+            }
+        }
+    </script>
+    </body>
 </html>
