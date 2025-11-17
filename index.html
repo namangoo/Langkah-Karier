@@ -6,34 +6,105 @@
     <title>Asesmen Langkah Karier</title>
     
     <style>
-        /* === FONT & TEMA DASAR "LUCU" === */
+        /* === FONT BARU: POppins === */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+        /* === TEMA DASAR "BIRU & PUTIH MODERN" === */
+        :root {
+            /* REVISI PALET WARNA: Biru Modern & Putih */
+            --primary-blue-light: #60a5fa; /* Sky Blue - Cerah */
+            --primary-blue-dark: #2563eb; /* Cobalt Blue - Lebih gelap */
+            --background-white: #ffffff;
+            --background-light-blue: #eff6ff; /* Background elemen biru sangat muda */
+            --text-dark: #1f2937;    /* Abu-abu gelap */
+            --text-light: #6b7280;   /* Abu-abu standar */
+            --border-color: #e0e7ff; /* Border biru sangat muda, lebih subtle */
+        }
+
         body {
-            font-family: "Arial Rounded MT Bold", "Helvetica Rounded", Arial, sans-serif;
-            background-color: #f7faff;
-            color: #444;
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-dark);
             margin: 0;
-            padding: 20px;
+            padding: 0;
             line-height: 1.6;
+            
+            /* REVISI GRADASI: Biru Langit (dari terang ke gelap) */
+            background: linear-gradient(135deg, var(--primary-blue-light) 0%, #a8d9ff 50%, var(--background-white) 100%);
+            background-size: 200% 200%;
+            animation: animatedGradient 10s ease infinite;
         }
 
+        @keyframes animatedGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* === PERBAIKAN HP & LAPTOP (RESPONSIVE) === */
         #quiz-container {
-            max-width: 700px;
-            margin: 20px auto;
-            background-color: #ffffff;
-            border-radius: 24px;
-            box-shadow: 0 10px 40px rgba(13, 71, 161, 0.08);
-            padding: 30px 40px;
-            border: 1px solid #fff;
-            animation: fadeIn 0.6s ease-out;
-            overflow: hidden; /* Mencegah animasi keluar batas */
+            width: 100%;
+            min-height: 100vh;
+            margin: 0;
+            padding: 30px 20px;
+            box-sizing: border-box;
+            background-color: var(--background-white);
+            border-radius: 0;
+            box-shadow: none;
+            overflow: hidden;
+            transition: all 0.3s ease-out;
         }
 
-        @keyframes fadeIn {
+        @media (min-width: 768px) {
+            #quiz-container {
+                max-width: 750px;
+                min-height: auto;
+                margin: 30px auto;
+                padding: 40px 50px;
+                border-radius: 30px; /* Modern rounded corner */
+                box-shadow: 0 10px 50px -10px rgba(0, 0, 0, 0.1); /* Shadow lebih lembut */
+            }
+        }
+        
+        /* === PROGRESS BAR === */
+        #progress-bar-container {
+            width: 100%;
+            background-color: var(--border-color);
+            border-radius: 10px;
+            height: 12px;
+            overflow: hidden;
+            margin-bottom: 25px;
+            display: none;
+        }
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            /* REVISI GRADASI: Biru ke Biru gelap */
+            background: linear-gradient(90deg, var(--primary-blue-light), var(--primary-blue-dark));
+            border-radius: 10px;
+            transition: width 0.4s ease-out;
+            box-shadow: 0 0 5px rgba(96, 165, 250, 0.5);
+        }
+
+        /* === ANIMASI TRANSISI FORM === */
+        #quiz-container > form {
+             animation: fadeInUp 0.5s ease-out;
+        }
+        @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* === VISUAL HALAMAN DEPAN BARU === */
+        /* === ANIMASI POP-UP BOUNCE UNTUK HASIL === */
+        #quiz-container > .result-box {
+            animation: pop-up-bounce 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+        @keyframes pop-up-bounce {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* === REVISI: VISUAL HALAMAN DEPAN === */
         .welcome-icon-container {
             text-align: center;
             margin-bottom: 15px;
@@ -41,17 +112,31 @@
         }
         .welcome-icon-bubble {
             display: inline-block;
-            font-size: 2.5em;
-            padding: 15px;
+            font-size: 2.2em; /* Ukuran HP */
+            padding: 12px;
             border-radius: 50%;
-            margin: 0 10px;
+            margin: 0 8px;
             line-height: 1;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            animation: bobble 1.8s infinite ease-in-out;
+            /* Styling baru: biru muda dengan shadow */
+            background: var(--background-light-blue);
+            color: var(--primary-blue-dark);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            animation: bobble 2s infinite ease-in-out;
         }
-        .welcome-icon-bubble:nth-child(1) { background-color: #e6f2ff; }
-        .welcome-icon-bubble:nth-child(2) { background-color: #fff8e1; animation-delay: 0.3s; }
-        .welcome-icon-bubble:nth-child(3) { background-color: #eaf6ff; animation-delay: 0.6s; }
+        .welcome-icon-bubble:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+         .welcome-icon-bubble:nth-child(3) {
+             animation-delay: 0.6s;
+         }
+        
+        @media (min-width: 768px) {
+             .welcome-icon-bubble {
+                 font-size: 2.5em; /* Ukuran Desktop */
+                 padding: 15px;
+                 margin: 0 10px;
+             }
+        }
 
         @keyframes bobble {
             0%, 100% { transform: translateY(0); }
@@ -60,102 +145,190 @@
 
         /* === TIPOGRAFI & JUDUL === */
         h1, h2, h3 {
-            color: #0D47A1;
+            color: var(--text-dark);
             text-align: center;
             font-weight: 700;
         }
-        h1 { font-size: 1.8em; margin-bottom: 15px; }
-        h2 { font-size: 1.5em; margin-top: 30px; }
-        h3 { font-size: 1.3em; color: #0096FF; }
+        h1 { font-size: 1.8em; margin-bottom: 15px; } /* Ukuran HP */
+        @media (min-width: 768px) {
+            h1 { font-size: 2.1em; } /* Ukuran Desktop */
+        }
+        
+        h2 { font-size: 1.6em; margin-top: 30px; }
+        h3 { font-size: 1.3em; color: var(--primary-blue-dark); } /* Judul hasil pakai biru gelap */
+        
+        /* === REVISI: STYLING PARAGRAF HALAMAN DEPAN === */
+         .welcome-text {
+            font-size: 1.1em;
+            color: var(--text-light);
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto 15px auto;
+         }
+         .welcome-text strong {
+             color: var(--primary-blue-dark); /* Highlight pakai biru gelap */
+         }
+         .welcome-quote { /* Info box modern */
+            text-align: left;
+            font-size: 1em;
+            color: var(--text-dark);
+            background-color: var(--background-white);
+            padding: 15px 18px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color); /* Border tipis */
+            border-left: 5px solid var(--primary-blue-light); /* Aksen biru */
+            margin-top: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Shadow lembut */
+         }
+         .welcome-quote.blue-theme { /* Khusus box tim */
+             border-left-color: var(--primary-blue-dark);
+             font-size: 0.95em;
+             color: var(--text-light);
+         }
+         .welcome-start {
+             text-align: center;
+             font-weight: 600;
+             font-size: 1.05em;
+             color: var(--primary-blue-dark);
+             margin-top: 15px;
+         }
 
         /* === PERTANYAAN & INPUT AWAL === */
-        .question {
+        /* REVISI: Styling <label> agar lebih modern */
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+        
+        .question { /* Style untuk pertanyaan di Tahap 1 & 2 */
             margin-bottom: 25px;
-            border-bottom: 1px solid #f0f4f8;
+            border-bottom: 1px solid var(--border-color);
             padding-bottom: 20px;
         }
-
         .question p {
             font-size: 1.1em;
             font-weight: 600;
-            color: #333;
+            color: var(--text-dark);
             margin-bottom: 15px;
         }
-
         .basic-input {
             display: block;
             width: 95%;
             padding: 14px 18px;
             margin-top: 5px;
-            border: 2px solid #e0e8f0;
+            border: 2px solid var(--border-color);
             border-radius: 12px;
             font-size: 1em;
-            font-family: "Arial Rounded MT Bold", "Helvetica Rounded", Arial, sans-serif;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.2s ease;
         }
         .basic-input:focus {
-            border-color: #0096FF;
-            box-shadow: 0 0 10px rgba(0, 150, 255, 0.15);
+            /* REVISI: Efek focus biru */
+            border-color: var(--primary-blue-light);
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
             outline: none;
         }
 
-        /* === PILIHAN JAWABAN === */
+        /* === PILIHAN JAWABAN (DENGAN EFEK "POP" BARU) === */
         .options {
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
-
+        .options.options-row {
+            flex-direction: column; /* HP */
+        }
+        @media (min-width: 768px) {
+            .options.options-row {
+                flex-direction: row; /* Laptop */
+            }
+        }
         .option {
             display: block;
-            background-color: #f8fbff;
+            background-color: var(--background-white);
             padding: 14px 18px;
             border-radius: 12px;
             cursor: pointer;
-            border: 2px solid #e8f0f8;
+            border: 2px solid var(--border-color);
             text-align: left;
             font-weight: 500;
-            transition: transform 0.15s ease-out, box-shadow 0.15s ease-out, border-color 0.15s ease-out;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                        box-shadow 0.2s ease, 
+                        border-color 0.2s ease;
         }
-
         .option:hover {
-            transform: scale(1.02);
-            box-shadow: 0 6px 15px rgba(0, 150, 255, 0.08);
-            border-color: #0096FF;
-            background-color: #fff;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 100, 200, 0.08);
+            border-color: #bfdbfe; /* Hover biru muda */
         }
-
         .option input[type="radio"] {
             margin-right: 12px;
-            accent-color: #0096FF;
+            accent-color: var(--primary-blue-dark); /* Radio button warna biru gelap */
             transform: scale(1.1);
         }
 
-        /* === TOMBOL SUBMIT "LUCU" === */
+        /* === ANIMASI BARU: EFEK "POP" SAAT MEMILIH === */
+        label.option:has(input[type="radio"]:checked) {
+            background-color: var(--background-light-blue); /* Latar biru muda */
+            border-color: var(--primary-blue-light); /* Border biru cerah */
+            transform: scale(1.03);
+            box-shadow: 0 6px 20px rgba(96, 165, 250, 0.2); /* Shadow biru */
+            font-weight: 600;
+        }
+        /* Efek border gradien untuk pilihan aktif */
+        label.option:has(input[type="radio"]:checked)::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 10px;
+            padding: 2px;
+            /* REVISI GRADASI: Biru ke Biru gelap */
+            background: linear-gradient(120deg, var(--primary-blue-light), var(--primary-blue-dark));
+            -webkit-mask: 
+                linear-gradient(#fff 0 0) content-box, 
+                linear-gradient(#fff 0 0);
+            -webkit-mask-composite: destination-out;
+            mask-composite: exclude;
+        }
+
+
+        /* === TOMBOL SUBMIT === */
         .submit-btn {
             display: block;
             width: 100%;
             padding: 16px 24px;
-            background-color: #0096FF;
+            /* REVISI GRADASI: Biru ke Biru gelap */
+            background: linear-gradient(90deg, var(--primary-blue-light), var(--primary-blue-dark));
+            background-size: 200% 100%;
             color: white;
             border: none;
             border-radius: 50px;
             font-size: 1.15em;
-            font-weight: bold;
-            font-family: "Arial Rounded MT Bold", "Helvetica Rounded", Arial, sans-serif;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
             cursor: pointer;
             margin-top: 20px;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            box-shadow: 0 4px 15px rgba(0, 150, 255, 0.3);
+            box-shadow: 0 5px 20px -5px rgba(37, 99, 235, 0.4); /* Shadow biru gelap */
+            transition: all 0.3s ease;
         }
-
         .submit-btn:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 6px 20px rgba(0, 150, 255, 0.4);
+            background-position: right center; /* Efek geser gradasi */
+            box-shadow: 0 8px 25px -5px rgba(37, 99, 235, 0.6); /* Shadow lebih kuat */
+            transform: translateY(-2px);
         }
-
+        .submit-btn:active {
+            transform: translateY(0) scale(0.98); /* Efek "squishy" */
+            box-shadow: 0 2px 10px -2px rgba(37, 99, 235, 0.3);
+        }
         .submit-btn:disabled {
-            background-color: #aaa;
+            background: #9ca3af; /* Abu-abu disable */
             box-shadow: none;
             cursor: not-allowed;
             transform: none;
@@ -164,51 +337,51 @@
         /* === KOTAK HASIL (RESULT BOX) === */
         .result-box {
             margin-top: 30px;
-            background-color: #eaf6ff;
-            border: 1px solid #d0eaff;
+            background-color: var(--background-white);
+            border: 1px solid var(--border-color);
             padding: 25px 30px;
             border-radius: 16px;
-            border-left: 8px solid #0096FF;
+            border-top: 8px solid var(--primary-blue-dark); /* Aksen biru gelap di atas */
         }
-
         #riasec-result-container {
             text-align: center;
         }
         
-        /* === VISUAL DI KALIMAT HASIL RIASEC BARU (PERMINTAAN INI) === */
+        /* === VISUAL DI KALIMAT HASIL RIASEC === */
         .riasec-result-item {
-            background-color: #fff;
-            border: 1px solid #d0eaff;
+            background-color: var(--background-light-blue); /* Latar biru sangat muda */
+            border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 20px;
             margin-top: 20px;
-            box-shadow: 0 5px 15px rgba(0, 150, 255, 0.05);
+            box-shadow: 0 5px 15px rgba(0, 80, 150, 0.05);
             text-align: left;
         }
-
+        /* === JUDUL HASIL DENGAN TEKS GRADASI === */
         .riasec-result-item h4 {
             display: flex;
             align-items: center; 
             justify-content: center;
-            color: #0D47A1;
             padding: 0; 
             border: none;
-            border-left: none;
             margin-top: 0; 
             margin-bottom: 15px;
-            font-size: 1.5em; 
-            text-align: center; 
+            font-size: 1.6em; 
+            text-align: center;
+            font-weight: 700;
+            
+            /* REVISI GRADASI TEKS: Biru ke Biru gelap */
+            background: -webkit-linear-gradient(45deg, var(--primary-blue-light), var(--primary-blue-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-
-        /* === PERUBAHAN DI SINI === */
         .riasec-result-item h4 .riasec-emoji-icon {
             font-size: 1.5em; 
             margin-right: 15px; 
-            /* Animasi bounceIn diganti dengan wigglePulse */
             animation: wigglePulse 3s infinite ease-in-out; 
+            -webkit-text-fill-color: initial; /* Kembalikan warna emoji */
         }
 
-        /* Animasi bounceIn dihapus, diganti dengan wigglePulse */
         @keyframes wigglePulse {
             0% { transform: scale(1) rotate(0deg); }
             25% { transform: scale(1.1) rotate(-4deg); }
@@ -216,28 +389,22 @@
             75% { transform: scale(1.1) rotate(4deg); }
             100% { transform: scale(1) rotate(0deg); }
         }
-        /* === AKHIR PERUBAHAN === */
 
-
-        /* Ini adalah sub-judul 'Arah Pendidikan' */
         .riasec-result-item h5 { 
-            color: #0D47A1;
-            background-color: #f7faff; 
+            color: var(--text-dark);
+            background-color: var(--background-white);
             padding: 10px 15px;
             border-radius: 8px;
-            border-left: 5px solid #0096FF;
+            border-left: 5px solid var(--primary-blue-light); /* Aksen biru cerah */
             margin-top: 25px;
             margin-bottom: 10px;
             font-size: 1.1em;
+            font-weight: 600;
         }
-        
-        .riasec-result-item p { margin-bottom: 10px; }
-
+        .riasec-result-item p { margin-bottom: 10px; color: var(--text-light); }
         .riasec-result-item p > strong {
-            color: #0D47A1; 
-            font-weight: 700;
-            display: inline-block;
-            margin-bottom: 5px;
+            color: var(--text-dark); 
+            font-weight: 600;
         }
 
         .riasec-result-item ul {
@@ -245,19 +412,19 @@
             margin-bottom: 15px;
             padding-left: 30px;
             list-style-type: '👉';
+            color: var(--text-light);
         }
         .riasec-result-item li {
             margin-bottom: 5px;
             padding-left: 8px;
         }
-
         #riasec-scores {
-            font-weight: bold;
-            color: #005cb9;
-            background-color: #fff;
+            font-weight: 600;
+            color: var(--primary-blue-dark);
+            background-color: var(--background-light-blue);
             padding: 12px;
             border-radius: 10px;
-            border: 2px dashed #0096FF;
+            border: 2px dashed var(--primary-blue-light);
         }
         
         /* === VISUAL HALAMAN HASIL AKHIR === */
@@ -268,20 +435,12 @@
             line-height: 1;
             animation: popIn 0.5s ease-out;
         }
-
         @keyframes popIn {
             from { transform: scale(0.5); opacity: 0; }
             to { transform: scale(1); opacity: 1; }
         }
 
-
         /* === VISIBILITAS FORM === */
-        .dynamic-question-wrapper {
-            margin-top: 20px;
-            padding-left: 20px;
-            border-left: 3px solid #eef2f6;
-        }
-
         #riasec-form, #school-form, #riasec-result-container, #school-result-container {
             display: none;
         }
@@ -291,7 +450,11 @@
 
     <div id="quiz-container">
         
-        <form id="user-form">
+        <div id="progress-bar-container">
+            <div id="progress-bar"></div>
+        </div>
+        
+        <form id="user-form" class="form-step">
             
             <div class="welcome-icon-container">
                 <span class="welcome-icon-bubble">🔍</span>
@@ -301,50 +464,53 @@
             
             <h1>Selamat Datang di Langkah Karier!</h1>
             
-            <p style="text-align: center; font-size: 1.1em; color: #555;">
+            <p class="welcome-text">
                 Di sini, kamu bisa menemukan jawaban dari pertanyaan penting:<br>
                 <strong>“Setelah lulus SMP… aku harus pilih kemana?”</strong>
             </p>
-            <p style="text-align: left; color: #666; margin-top: 15px;">
-                Tenang, kamu nggak perlu bingung sendiri. Website ini akan membantu kamu mengenali minat, kekuatan, dan arah pendidikan yang paling cocok untuk masa depanmu. Cukup isi tesnya, dan kamu akan mendapatkan rekomendasi jenjang dan jurusan yang sesuai dengan kepribadianmu.
+            
+            <p class="welcome-quote">
+                Tenang, kamu nggak perlu bingung sendiri. Website ini akan membantu kamu mengenali minat, kekuatan, dan arah pendidikan yang paling cocok untuk masa depanmu.
             </p>
-            <p style="text-align: left; font-size: 0.95em; color: #666; background-color: #f8faff; padding: 12px 15px; border-radius: 12px; border-left: 4px solid #0096FF;">
+            
+            <p class="welcome-quote blue-theme">
                 <em>Website Langkah Karier dirancang khusus oleh Tim Whitmore Center, menggunakan pendekatan psikologi karier yang terpercaya dan mudah dipahami oleh siswa SMP.</em>
             </p>
-            <p style="text-align: center; font-weight: bold; font-size: 1.05em; color: #0D47A1; margin-top: 15px;">
+            <p class="welcome-start">
                 Ayo mulai perjalananmu menemukan masa depan yang tepat buat kamu!
             </p>
             
-            <hr style="border: 0; border-top: 1px solid #f0f4f8; margin: 25px 0;">
+            <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 25px 0;">
             
-            <div class="question">
-                <p>Nama Lengkap</p>
+            <div class="input-group">
+                <label for="user-name" class="input-label">Nama Lengkap</label>
                 <input type="text" id="user-name" class="basic-input" placeholder="Masukkan nama Anda..." required>
             </div>
-            <div class="question">
-                <p>Kelas</p>
+            <div class="input-group">
+                <label for="user-class" class="input-label">Kelas</label>
                 <input type="text" id="user-class" class="basic-input" placeholder="Contoh: 9A" required>
             </div>
+            
             <button type="submit" class="submit-btn" id="start-btn">Mulai Asesmen</button>
         </form>
 
-        <form id="riasec-form">
+        <form id="riasec-form" class="form-step">
             <h1>Tahap 1: Asesmen Minat Karir</h1>
-            <p style="text-align: center;">Jawab "Iya" atau "Tidak" untuk setiap pernyataan di bawah ini.</p>
+            <p style="text-align: center; color: var(--text-light);">Jawab "Iya" atau "Tidak" untuk setiap pernyataan di bawah ini.</p>
             <div id="questions-wrapper-riasec"></div>
             <button type="submit" class="submit-btn" id="submit-riasec">Selesai Tahap 1: Lihat Tipe Minat Saya</button>
         </form>
 
-        <div id="riasec-result-container" class="result-box">
+        <div id="riasec-result-container" class="result-box form-step">
             <h2>Tipe Minat Terkuat Anda:</h2>
             <h3 id="riasec-overall-title"></h3> 
             <div id="riasec-description"></div> 
-            <hr style="border: 0; border-top: 1px solid #b3d7ff; margin: 20px 0;">
+            <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 20px 0;">
             <p><strong>Rincian Skor Anda:</strong></p>
             <p id="riasec-scores"></p>
         </div>
 
-        <form id="school-form">
+        <form id="school-form" class="form-step">
             <h2 style="margin-top: 40px;">Tahap 2: Rekomendasi Sekolah</h2>
             <div class="question">
                 <p>31. Kamu lebih suka jenis pembelajaran seperti apa?</p>
@@ -376,7 +542,7 @@
             <button type="submit" class="submit-btn" id="submit-school">Simpan & Lihat Rekomendasi Akhir</button>
         </form>
 
-        <div id="school-result-container" class="result-box">
+        <div id="school-result-container" class="result-box form-step">
             <h3 id="school-emoji"></h3> 
             
             <h2>Hasil Akhir Rekomendasi Sekolah:</h2>
@@ -387,7 +553,7 @@
     </div>
     <script>
         
-        const appsScriptURL = "https://script.google.com/macros/s/AKfycbxIdrHgtqV85llfIWFnpTS2ysDO7cRJ3ExOxTRnLdFPh97Xj3PVp0BRIpskrjgGE25Mxg/exec";
+        const appsScriptURL = "https://script.google.com/macros/s/AKfycbzF6oP9qdUhUhdBCno7ETQGuj2Ftycf4EGvRRtddnPltWbiFh4oQ02tSZLAtHDlURycdg/exec";
         
         let finalRIASECScores = {};
         let finalRIASECType = "";
@@ -396,6 +562,10 @@
             nama: "",
             kelas: ""
         };
+        
+        const progressBar = document.getElementById('progress-bar');
+        const progressBarContainer = document.getElementById('progress-bar-container');
+        let totalQuestionCount = 0; 
 
         // --- 1. DAFTAR PERTANYAAN TAHAP 1 (RIASEC) ---
         const questionsRIASEC = [
@@ -432,7 +602,6 @@
         ];
 
         // --- 2. DAFTAR HASIL TAHAP 1 (RIASEC) ---
-        // (Emoji sudah ditambahkan di sini, akan digunakan oleh JS)
         const careerResults = {
             "R": { 
                 title: "Realistic (Si Pekerja)", emoji: "🛠️",
@@ -440,7 +609,7 @@
                     <p>Kamu adalah tipe yang suka praktik langsung dan nyaman bekerja dengan alat, mesin, teknologi, atau aktivitas lapangan. Kamu lebih mudah paham saat mencoba sendiri daripada hanya membaca teori. Kamu senang kalau bisa melihat hasil nyata dari usaha kamu.</p>
                     <p><strong>Ciri-ciri kamu:</strong> praktis dan suka hal nyata, tertarik pada alat, mesin, teknologi, suka langkah-langkah jelas, belajar cepat lewat praktik, teliti dan fokus, tidak terlalu suka teori atau banyak bicara.</p>
                     <h5>🎓 Arah Pendidikan Setelah SMP</h5>
-                    <p><strong>🔧 SMK – Pilihan Paling Cocok</strong><br>
+                    <p><strong>🔧 SMK – Jika Kamu Menyukai Praktik dan Langsung Terjun ke Dunia Kerja</strong><br>
                     Karena kamu tipe Realistic, lingkungan penuh praktik sangat sesuai untukmu.</p>
                     <p>Jurusan yang cocok:</p>
                     <ul>
@@ -466,7 +635,7 @@
                     <p>Kamu adalah tipe yang suka mencari tahu, menganalisis, dan memecahkan masalah dengan berpikir mendalam. Kamu nyaman bekerja dengan ide, data, informasi, rumus, eksperimen, dan hal-hal yang membutuhkan logika. Kamu lebih mudah paham saat menyelidiki, membaca, atau mengamati pola daripada melakukan aktivitas fisik.</p>
                     <p><strong>Ciri-ciri Kamu:</strong> suka berpikir, meneliti, dan menganalisis, penasaran dan suka bertanya “mengapa?”, menyukai pelajaran sains, matematika, teknologi, senang mengamati pola, eksperimen, dan mencari solusi, lebih suka bekerja sendiri daripada banyak bicara, teliti, fokus, dan suka tantangan logis, tidak terlalu suka pekerjaan fisik atau yang terlalu sosial.</p>
                     <h5>🎓 Arah Pendidikan Setelah SMP</h5>
-                    <p><strong>🔬 SMA – Pilihan Paling Cocok</strong><br>
+                    <p><strong>🔬 SMA –  Jika Ingin Dasar Teori yang Luas</strong><br>
                     SMA memberi kamu ruang untuk memperkuat logika, teori, dan sains, yang sangat sesuai untuk tipe Investigative menurut teori Holland.</p>
                     <p>Jurusan yang cocok: MIPA (Matematika & Ilmu Pengetahuan Alam)</p>
                     <p>Di MIPA, kamu bertemu: Matematika, Fisika, Kimia, Biologi, Eksperimen dan penelitian. Ini adalah lingkungan yang sesuai dengan cara kamu berpikir dan belajar.</p>
@@ -490,7 +659,7 @@
                     <p>Kamu adalah tipe yang penuh imajinasi, kreatif, dan suka mengekspresikan diri. Kamu nyaman bekerja dengan ide, warna, bentuk, musik, tulisan, desain, dan karya seni. Kamu lebih mudah memahami sesuatu melalui perasaan, intuisi, dan kreativitas, bukan lewat aturan yang kaku.</p>
                     <p><strong>Ciri-ciri Kamu:</strong> imajinatif dan suka berpikir bebas, menyukai seni: menggambar, menulis, musik, desain, atau video. Tidak suka aturan yang terlalu ketat, senang mengekspresikan diri melalui karya, peka terhadap detail visual dan emosi, suka mencoba hal baru dan bereksperimen dengan ide, tidak terlalu suka tugas yang kaku, monoton, atau terlalu teknis.</p>
                     <h5>🎓 Arah Pendidikan Setelah SMP</h5>
-                    <p><strong>🎨 SMA – Pilihan yang Sangat Cocok</strong><br>
+                    <p><strong>🎨 SMA –  Jika Ingin Dasar Teori yang Luas</strong><br>
                     SMA memberi ruang bagi kamu untuk mengembangkan kreativitas melalui pelajaran yang lebih fleksibel dan beragam.</p>
                     <p>Jurusan yang cocok: IPS atau Bahasa</p>
                     <p>Kedua jurusan ini memberi banyak ruang untuk: menulis kreatif, desain, komunikasi, seni dan budaya, proyek sosial dan kreatif. Jika kamu berbakat visual atau verbal, SMA adalah jalur yang memungkinkan bakatmu tumbuh bebas.</p>
@@ -518,7 +687,7 @@
                     <p>Kamu adalah tipe yang peduli, hangat, dan suka membantu orang lain. Kamu nyaman bekerja dengan manusia, bukan mesin atau data. Kamu lebih mudah memahami sesuatu saat bisa berinteraksi, berdiskusi, mengajar, atau memberi dukungan. Kamu merasa puas ketika bisa membuat orang lain merasa lebih baik.</p>
                     <p><strong>Ciri-ciri Kamu:</strong> suka membantu teman dan orang sekitar, mudah bergaul dan nyaman berbicara, sabar, ramah, dan empati tinggi. Senang bekerja dalam kelompok, menyukai kegiatan yang berhubungan dengan manusia, baik dalam mendengarkan dan memberi saran, tidak terlalu suka pekerjaan teknis, mesin, atau hal yang terlalu kaku.</p>
                     <h5>🎓 Arah Pendidikan Setelah SMP</h5>
-                    <p><strong>🧑‍🏫 SMA – Pilihan Sangat Cocok</strong><br>
+                    <p><strong>🧑‍🏫 SMA – P Jika Ingin Dasar Teori yang Luas</strong><br>
                     SMA memberi kamu ruang untuk mengembangkan kemampuan komunikasi, sosial, dan kepemimpinan.</p>
                     <p>Jurusan yang cocok: IPS</p>
                     <p>Karena kamu akan belajar: sosiologi, geografi, ekonomi, ilmu sosial dan perilaku, komunikasi, yang semuanya mendukung bakat sosialmu.</p>
@@ -544,13 +713,13 @@
                     <p>Kamu adalah tipe yang percaya diri, berani, dan suka mengambil peran memimpin. Kamu nyaman bekerja dengan orang, keputusan, rencana besar, dan tantangan baru. Kamu lebih mudah memahami sesuatu ketika bisa mengajak orang lain, bernegosiasi, berbicara, atau menjalankan sebuah proyek. Kamu senang saat bisa memengaruhi, mengatur, mengarahkan, atau membuat keputusan. Kamu cocok dalam situasi yang aktif, bergerak cepat, dan membutuhkan inisiatif.</p>
                     <p><strong>Ciri-ciri Kamu:</strong> percaya diri dan mudah berbicara di depan orang. Suka memimpin, mengatur, dan mengajak orang lain. Berani mencoba hal baru dan mengambil risiko. Senang merencanakan atau mengorganisir acara. Pandai memotivasi dan mempengaruhi teman. Tertarik pada dunia bisnis, marketing, organisasi, atau kepemimpinan. Tidak terlalu suka aktivitas yang terlalu teknis atau terlalu banyak teori mendalam.</p>
                     <h5>🎓 Arah Pendidikan Setelah SMP</h5>
-                    <p><strong>🧑‍💼 SMA – Pilihan Sangat Cocok</strong><br>
-                    SMA memberi ruang bagi kamu yang suka berorganisasi, memimpin, dan memperdalam ilmu sosial.</p>
+                    <p><strong>🧑‍💼 SMA –  Jika Ingin Dasar Teori yang Luas</strong><br>
+                    SMA memberi kamu ruang bagi kamu yang suka berorganisasi, memimpin, dan memperdalam ilmu sosial.</p>
                     <p>Jurusan yang cocok: IPS</p>
                     <p>Karena kamu akan belajar: ekonomi, manajemen dasar, sosiologi, geografi sosial, kewirausahaan, yang sangat sesuai untuk tipe Enterprising. IPS adalah jalur kuat untuk masa depan di dunia bisnis, komunikasi, atau kepemimpinan.</p>
                     <p><strong>🕌 MA – Jika Kamu Ingin Suasana Religius + Organisasi Sosial</strong><br>
                     Di MA, kamu tetap bisa memilih IPS dan aktif dalam: organisasi OSIS, da’i remaja, kegiatan sosial, kegiatan kewirausahaan sekolah. Lingkungan ini membantu mengasah kemampuan memimpin dan berbicaramu.</p>
-                    <p><strong>💼 SMK – Cocok Jika Kamu Ingin Langsung Masuk Dunia Bisnis</strong><br>
+                    <p><strong>💼 SMK – Jika Kamu Menyukai Praktik dan Langsung Terjun ke Dunia Kerja</strong><br>
                     Beberapa jurusan SMK sangat sesuai karena fokusnya pada bisnis, komunikasi, dan manajemen, yang merupakan kekuatan utama tipe Enterprising.</p>
                     <p>Jurusan SMK yang cocok:</p>
                     <ul>
@@ -572,7 +741,7 @@
                     <p>Kamu adalah tipe yang rapi, teliti, dan suka bekerja dengan data, angka, catatan, dan aturan yang jelas. Kamu nyaman ketika segala sesuatu terorganisir, terstruktur, dan ada langkah-langkah yang bisa diikuti. Kamu lebih mudah memahami sesuatu ketika ada aturan, tabel, pola, atau instruksi yang sistematis. Kamu senang saat bisa menyusun, mengatur, mengarsipkan, menghitung, atau memastikan sesuatu berjalan sesuai prosedur.</p>
                     <p><strong>Ciri-ciri Kamu:</strong> teliti dan rapi dalam mengerjakan tugas. Suka tabel, data, angka, atau pekerjaan dengan detail, menyukai aturan yang jelas dan langkah-langkah teratur. Senang mengatur jadwal, catatan, atau dokumen. Bertanggung jawab dan disiplin. Tidak terlalu suka sesuatu yang terlalu bebas, acak, atau tidak terstruktur. Suka tugas yang pasti dan jelas apa yang harus dilakukan.</p>
                     <h5>🎓 Arah Pendidikan Setelah SMP</h5>
-                    <p><strong>📊 SMK – Pilihan Sangat Cocok</strong><br>
+                    <p><strong>📊 SMK – Jika Kamu Menyukai Praktik dan Langsung Terjun ke Dunia Kerja</strong><br>
                     SMK menawarkan banyak jurusan yang menggunakan data, administrasi, keuangan, dan ketelitian—hal yang sesuai dengan tipe Conventional.</p>
                     <p>Jurusan SMK yang cocok:</p>
                     <ul>
@@ -612,8 +781,8 @@
             userForm.style.display = 'none';
             riasecForm.style.display = 'block';
             window.scrollTo(0, 0);
+            progressBarContainer.style.display = 'block';
         });
-
 
         // --- 5. LOGIKA UNTUK MENAMPILKAN PERTANYAAN TAHAP 1 ---
         const questionsWrapperRIASEC = document.getElementById('questions-wrapper-riasec');
@@ -622,7 +791,7 @@
             questionDiv.className = 'question';
             questionDiv.innerHTML = `
                 <p>${index + 1}. ${q.question}</p>
-                <div class="options" style="flex-direction: row;">
+                <div class="options options-row">
                     <label class="option" style="flex-grow: 1;"><input type="radio" name="${q.name}" value="${q.type}" required> Iya</label>
                     <label class="option" style="flex-grow: 1;"><input type="radio" name="${q.name}" value="none"> Tidak</label>
                 </div>
@@ -631,7 +800,6 @@
         });
 
         // --- 6. LOGIKA SUBMIT TAHAP 1 (RIASEC) ---
-        // (PERUBAHAN LOGIKA UNTUK MENAMPILKAN VISUAL BARU)
         const riasecResultContainer = document.getElementById('riasec-result-container');
         const schoolForm = document.getElementById('school-form');
 
@@ -660,7 +828,7 @@
             finalRIASECType = highestTypes.join(", "); 
 
             let combinedTitle = "";
-            let combinedDescriptionHTML = ""; // Variabel baru untuk menampung blok HTML
+            let combinedDescriptionHTML = ""; 
 
             if (highestTypes[0] === "(Tidak ada minat dominan)") {
                 combinedTitle = "Belum Ada Minat Dominan";
@@ -670,7 +838,6 @@
                     .map(type => careerResults[type].title) 
                     .join(" & "); 
 
-                // Buat blok visual untuk setiap tipe
                 highestTypes.forEach(type => {
                     const result = careerResults[type];
                     combinedDescriptionHTML += `
@@ -768,6 +935,7 @@
                 submitSchoolBtn.disabled = true;
                 submitSchoolBtn.innerText = "Menyimpan data...";
                 saveStatus.innerText = "Sedang menyimpan hasil...";
+                progressBar.style.width = '100%';
                 
                 saveToGoogleSheets();
             } else {
@@ -775,7 +943,7 @@
             }
         });
 
-        // --- 9. FUNGSI BARU UNTUK MENYIMPAN DATA (DENGAN FIX 'text/plain') ---
+        // --- 9. FUNGSI SIMPAN KE GOOGLE SHEETS ---
         async function saveToGoogleSheets() {
             const dataToSave = {
                 nama: userData.nama,
@@ -794,21 +962,15 @@
                 const response = await fetch(appsScriptURL, {
                     method: 'POST',
                     mode: 'cors',
-                    headers: {
-                        'Content-Type': 'text/plain;charset=utf-8', 
-                    },
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8', },
                     body: JSON.stringify(dataToSave)
                 });
-
                 const result = await response.json();
-
                 if (result.result === "success") {
                     submitSchoolBtn.innerText = "Data Berhasil Disimpan";
                     saveStatus.innerText = "Hasil Anda telah berhasil disimpan.";
                     saveStatus.style.color = "green";
-                } else {
-                    throw new Error(result.message || "Unknown error");
-                }
+                } else { throw new Error(result.message || "Unknown error"); }
             } catch (error) {
                 console.error('Error saving to Google Sheets:', error);
                 submitSchoolBtn.innerText = "Gagal Menyimpan";
@@ -817,7 +979,25 @@
                 submitSchoolBtn.disabled = false;
             }
         }
+        
+        // === LOGIKA BARU UNTUK PROGRESS BAR ===
+        const riasecQuestionCount = questionsRIASEC.length;
+        const schoolQuestionCount = 3; 
+        totalQuestionCount = riasecQuestionCount + schoolQuestionCount;
+
+        function updateProgress() {
+            const riasecChecked = document.querySelectorAll('#riasec-form input[type="radio"]:checked').length;
+            const schoolChecked = document.querySelectorAll('#school-form input[type="radio"]:checked').length;
+            
+            let totalChecked = riasecChecked + schoolChecked;
+            let progress = (totalChecked / totalQuestionCount) * 100;
+            
+            progressBar.style.width = progress + '%';
+        }
+        
+        riasecForm.addEventListener('change', updateProgress);
+        schoolForm.addEventListener('change', updateProgress);
+
     </script>
     </body>
 </html>
-
